@@ -7,7 +7,7 @@ resolver = "2"
 
 
 [workspace.package]
-name = "llm-oxide"
+name = "ferrous-llm"
 version = "0.1.0"
 description = "LLM library"
 authors = ["Andre Roelofs <andre@eurora-labs.com>"]

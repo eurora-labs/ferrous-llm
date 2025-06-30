@@ -17,6 +17,9 @@ edition = "2024"
 [workspace.dependencies]
 tokio = { version = "1.45.1", default-features = false, features = ["full"] }
 
+llm-core = { path = "crates/llm-core" }
+llm-memory = { path = "crates/llm-memory" }
+
 [workspace.dev-dependencies]
 tracing-subscriber = "0.3.19"
 

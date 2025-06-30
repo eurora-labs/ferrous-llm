@@ -1,0 +1,6 @@
+[package]
+name = "llm-core"
+version.workspace = true
+description = "Core LLM library"
+authors.workspace = true
+edition.workspace = true

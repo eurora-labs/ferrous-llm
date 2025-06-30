@@ -1,0 +1,37 @@
+
+[workspace]
+members = [
+    "crates/llm-*",
+]
+resolver = "2"
+
+
+[workspace.package]
+name = "llm-oxide"
+version = "0.1.0"
+description = "LLM library"
+authors = ["Andre Roelofs <andre@eurora-labs.com>"]
+license = "Apache-2.0"
+edition = "2024"
+
+[workspace.dependencies]
+tokio = { version = "1.45.1", default-features = false, features = ["full"] }
+
+[workspace.dev-dependencies]
+tracing-subscriber = "0.3.19"
+
+[profile.release]
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true        # Enables link to optimizations
+opt-level = "s"   # Optimize for binary size
+debug = true      # Enable debug symbols, for profiling
+
+[profile.bench]
+codegen-units = 256
+lto = false
+opt-level = 3
+
+[profile.dev]
+incremental = true
+codegen-units = 256
+overflow-checks = false

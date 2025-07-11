@@ -1,8 +1,6 @@
 //! Integration tests for the Anthropic provider.
 
-use dotenv::dotenv;
 use llm_anthropic::{AnthropicConfig, AnthropicProvider};
-use llm_core::{ChatProvider, ChatRequest, ChatResponse, Message, Metadata, Parameters};
 
 #[cfg(feature = "e2e-tests")]
 mod e2e {
@@ -116,7 +114,7 @@ mod e2e {
                 Ok(chunk) => {
                     content.push_str(&chunk);
                     chunk_count += 1;
-                    print!("{}", chunk);
+                    print!("{chunk}");
                 }
                 Err(e) => panic!("Stream error: {:?}", e),
             }

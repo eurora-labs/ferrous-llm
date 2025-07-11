@@ -229,7 +229,11 @@ impl StreamingProvider for AnthropicProvider {
                                                         return;
                                                     }
                                                 }
-                                                _ => {} // Handle other delta types if needed
+                                                AnthropicContentDelta::InputJsonDelta {
+                                                    ..
+                                                } => {
+                                                    // TODO: Handle input json delta
+                                                }
                                             }
                                         }
                                         AnthropicStreamChunk::MessageStop => {

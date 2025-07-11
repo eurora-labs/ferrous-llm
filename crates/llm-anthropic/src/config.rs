@@ -102,9 +102,9 @@ impl AnthropicConfig {
     pub fn messages_url(&self) -> String {
         let base = self.base_url();
         if base.ends_with('/') {
-            format!("{}v1/messages", base)
+            format!("{base}v1/messages")
         } else {
-            format!("{}/v1/messages", base)
+            format!("{base}/v1/messages")
         }
     }
 

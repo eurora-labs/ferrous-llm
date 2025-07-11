@@ -255,7 +255,7 @@ impl ChatResponse for AnthropicMessagesResponseWrapper {
         // We need to store the extracted text to return a reference
         // This is a limitation of the current design - we'll use a static approach
         thread_local! {
-            static CONTENT_CACHE: std::cell::RefCell<String> = std::cell::RefCell::new(String::new());
+            static CONTENT_CACHE: std::cell::RefCell<String> = const { std::cell::RefCell::new(String::new()) };
         }
 
         CONTENT_CACHE.with(|cache| {
@@ -298,7 +298,7 @@ impl ChatResponse for AnthropicMessagesResponse {
     fn content(&self) -> &str {
         // Similar thread-local approach for direct response
         thread_local! {
-            static CONTENT_CACHE: std::cell::RefCell<String> = std::cell::RefCell::new(String::new());
+            static CONTENT_CACHE: std::cell::RefCell<String> = const { std::cell::RefCell::new(String::new()) };
         }
 
         CONTENT_CACHE.with(|cache| {

@@ -104,6 +104,64 @@ impl OllamaProvider {
         }
     }
 
+    /// Apply request parameters to options, handling both existing and new options.
+    fn apply_parameters_to_options(
+        parameters: &llm_core::Parameters,
+        existing_options: Option<serde_json::Value>,
+    ) -> Option<serde_json::Value> {
+        // Check if any parameters are set
+        let has_parameters = parameters.temperature.is_some()
+            || parameters.max_tokens.is_some()
+            || parameters.top_p.is_some()
+            || parameters.top_k.is_some()
+            || !parameters.stop_sequences.is_empty();
+
+        if !has_parameters {
+            return existing_options;
+        }
+
+        let options = if let Some(mut opts) = existing_options {
+            // Modify existing options
+            if let Some(temp) = parameters.temperature {
+                opts["temperature"] = json!(temp);
+            }
+            if let Some(max_tokens) = parameters.max_tokens {
+                opts["num_predict"] = json!(max_tokens);
+            }
+            if let Some(top_p) = parameters.top_p {
+                opts["top_p"] = json!(top_p);
+            }
+            if let Some(top_k) = parameters.top_k {
+                opts["top_k"] = json!(top_k);
+            }
+            if !parameters.stop_sequences.is_empty() {
+                opts["stop"] = json!(parameters.stop_sequences);
+            }
+            opts
+        } else {
+            // Create new options map
+            let mut new_options = serde_json::Map::new();
+            if let Some(temp) = parameters.temperature {
+                new_options.insert("temperature".to_string(), json!(temp));
+            }
+            if let Some(max_tokens) = parameters.max_tokens {
+                new_options.insert("num_predict".to_string(), json!(max_tokens));
+            }
+            if let Some(top_p) = parameters.top_p {
+                new_options.insert("top_p".to_string(), json!(top_p));
+            }
+            if let Some(top_k) = parameters.top_k {
+                new_options.insert("top_k".to_string(), json!(top_k));
+            }
+            if !parameters.stop_sequences.is_empty() {
+                new_options.insert("stop".to_string(), json!(parameters.stop_sequences));
+            }
+            serde_json::Value::Object(new_options)
+        };
+
+        Some(options)
+    }
+
     /// Convert core ChatRequest to Ollama format.
     fn convert_chat_request(&self, request: &ChatRequest) -> OllamaChatRequest {
         let mut ollama_request = OllamaChatRequest {
@@ -115,47 +173,9 @@ impl OllamaProvider {
             keep_alive: self.config.keep_alive.map(|ka| format!("{ka}s")),
         };
 
-        // Apply parameters to options
-        if let Some(ref mut options) = ollama_request.options {
-            if let Some(temp) = request.parameters.temperature {
-                options["temperature"] = json!(temp);
-            }
-            if let Some(max_tokens) = request.parameters.max_tokens {
-                options["num_predict"] = json!(max_tokens);
-            }
-            if let Some(top_p) = request.parameters.top_p {
-                options["top_p"] = json!(top_p);
-            }
-            if let Some(top_k) = request.parameters.top_k {
-                options["top_k"] = json!(top_k);
-            }
-            if !request.parameters.stop_sequences.is_empty() {
-                options["stop"] = json!(request.parameters.stop_sequences);
-            }
-        } else if request.parameters.temperature.is_some()
-            || request.parameters.max_tokens.is_some()
-            || request.parameters.top_p.is_some()
-            || request.parameters.top_k.is_some()
-            || !request.parameters.stop_sequences.is_empty()
-        {
-            let mut options = serde_json::Map::new();
-            if let Some(temp) = request.parameters.temperature {
-                options.insert("temperature".to_string(), json!(temp));
-            }
-            if let Some(max_tokens) = request.parameters.max_tokens {
-                options.insert("num_predict".to_string(), json!(max_tokens));
-            }
-            if let Some(top_p) = request.parameters.top_p {
-                options.insert("top_p".to_string(), json!(top_p));
-            }
-            if let Some(top_k) = request.parameters.top_k {
-                options.insert("top_k".to_string(), json!(top_k));
-            }
-            if !request.parameters.stop_sequences.is_empty() {
-                options.insert("stop".to_string(), json!(request.parameters.stop_sequences));
-            }
-            ollama_request.options = Some(serde_json::Value::Object(options));
-        }
+        // Apply parameters to options using helper function
+        ollama_request.options =
+            Self::apply_parameters_to_options(&request.parameters, ollama_request.options);
 
         ollama_request
     }
@@ -172,47 +192,9 @@ impl OllamaProvider {
             context: None,
         };
 
-        // Apply parameters to options
-        if let Some(ref mut options) = ollama_request.options {
-            if let Some(temp) = request.parameters.temperature {
-                options["temperature"] = json!(temp);
-            }
-            if let Some(max_tokens) = request.parameters.max_tokens {
-                options["num_predict"] = json!(max_tokens);
-            }
-            if let Some(top_p) = request.parameters.top_p {
-                options["top_p"] = json!(top_p);
-            }
-            if let Some(top_k) = request.parameters.top_k {
-                options["top_k"] = json!(top_k);
-            }
-            if !request.parameters.stop_sequences.is_empty() {
-                options["stop"] = json!(request.parameters.stop_sequences);
-            }
-        } else if request.parameters.temperature.is_some()
-            || request.parameters.max_tokens.is_some()
-            || request.parameters.top_p.is_some()
-            || request.parameters.top_k.is_some()
-            || !request.parameters.stop_sequences.is_empty()
-        {
-            let mut options = serde_json::Map::new();
-            if let Some(temp) = request.parameters.temperature {
-                options.insert("temperature".to_string(), json!(temp));
-            }
-            if let Some(max_tokens) = request.parameters.max_tokens {
-                options.insert("num_predict".to_string(), json!(max_tokens));
-            }
-            if let Some(top_p) = request.parameters.top_p {
-                options.insert("top_p".to_string(), json!(top_p));
-            }
-            if let Some(top_k) = request.parameters.top_k {
-                options.insert("top_k".to_string(), json!(top_k));
-            }
-            if !request.parameters.stop_sequences.is_empty() {
-                options.insert("stop".to_string(), json!(request.parameters.stop_sequences));
-            }
-            ollama_request.options = Some(serde_json::Value::Object(options));
-        }
+        // Apply parameters to options using helper function
+        ollama_request.options =
+            Self::apply_parameters_to_options(&request.parameters, ollama_request.options);
 
         ollama_request
     }

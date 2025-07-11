@@ -4,7 +4,6 @@ mod e2e_tests {
     use llm_core::*;
     use llm_openai::*;
     use std::env;
-    use std::time::Duration;
 
     // These tests require a real OpenAI API key and should only run when explicitly enabled
     // Run with: cargo test --features e2e-tests
@@ -64,6 +63,66 @@ mod e2e_tests {
             }
             Err(e) => {
                 panic!("Live embedding test failed (this may be expected): {:?}", e);
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn test_live_streaming_chat() {
+        let Some(config) = get_test_config() else {
+            println!("Skipping live streaming test - OPENAI_API_KEY not set");
+            return;
+        };
+
+        let provider = OpenAIProvider::new(config).unwrap();
+        let request = ChatRequest::builder()
+            .message(Message::user(
+                "Count from 1 to 5, one number per response chunk.",
+            ))
+            .temperature(0.0)
+            .max_tokens(50)
+            .build();
+
+        let stream_result = provider.chat_stream(request).await;
+        match stream_result {
+            Ok(mut stream) => {
+                let mut content_parts = Vec::new();
+                let mut chunk_count = 0;
+
+                // Use tokio_stream::StreamExt for the stream operations
+                use tokio_stream::StreamExt;
+
+                while let Some(chunk_result) = stream.next().await {
+                    match chunk_result {
+                        Ok(content) => {
+                            content_parts.push(content.clone());
+                            chunk_count += 1;
+                            println!("Streaming chunk {}: '{}'", chunk_count, content);
+
+                            // Limit chunks to prevent infinite loops in tests
+                            if chunk_count > 20 {
+                                break;
+                            }
+                        }
+                        Err(e) => {
+                            panic!("Streaming error: {:?}", e);
+                        }
+                    }
+                }
+
+                assert!(chunk_count > 0, "Should receive at least one chunk");
+                let full_content = content_parts.join("");
+                assert!(
+                    !full_content.is_empty(),
+                    "Combined content should not be empty"
+                );
+                println!(
+                    "Live streaming test passed with {} chunks, full content: '{}'",
+                    chunk_count, full_content
+                );
+            }
+            Err(e) => {
+                panic!("Live streaming test failed (this may be expected): {:?}", e);
             }
         }
     }

@@ -241,7 +241,8 @@ pub mod validation {
 
     /// Validate that a URL is well-formed
     pub fn validate_url(url: &str, field_name: &str) -> Result<Url, ConfigError> {
-        Url::parse(url).map_err(|_| ConfigError::invalid_url(url))
+        Url::parse(url)
+            .map_err(|_| ConfigError::invalid_value(field_name, format!("Invalid URL: {}", url)))
     }
 
     /// Validate that a URL is HTTPS

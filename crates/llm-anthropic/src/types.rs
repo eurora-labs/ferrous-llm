@@ -376,7 +376,7 @@ impl From<&llm_core::Message> for AnthropicMessage {
                         llm_core::ContentPart::Audio { audio_url, .. } => {
                             // Anthropic doesn't support audio in the same way, convert to text description
                             AnthropicContentBlock::Text {
-                                text: format!("[Audio content: {}]", audio_url),
+                                text: format!("[Audio content: {audio_url}]"),
                             }
                         }
                     })

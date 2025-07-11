@@ -213,7 +213,11 @@ impl EmbeddingProvider for OpenAIProvider {
 
     async fn embed(&self, texts: &[String]) -> ProviderResult<Vec<Embedding>, Self::Error> {
         let request = OpenAIEmbeddingsRequest {
-            model: "text-embedding-ada-002".to_string(), // Default embedding model
+            model: self
+                .config
+                .embedding_model
+                .clone()
+                .unwrap_or_else(|| "text-embedding-ada-002".to_string()),
             input: if texts.len() == 1 {
                 json!(texts[0])
             } else {

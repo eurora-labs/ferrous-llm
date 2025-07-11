@@ -147,10 +147,10 @@ impl OpenAIError {
                     message: "Not found".to_string(),
                 },
                 500..=599 => Self::ServiceUnavailable {
-                    message: format!("Server error: {}", status),
+                    message: format!("Server error: {status}"),
                 },
                 _ => Self::Other {
-                    message: format!("HTTP {}: {}", status, body),
+                    message: format!("HTTP {status}: {body}"),
                 },
             }
         }

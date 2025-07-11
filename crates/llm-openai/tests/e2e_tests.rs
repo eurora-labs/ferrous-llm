@@ -7,7 +7,7 @@ mod e2e_tests {
     use std::time::Duration;
 
     // These tests require a real OpenAI API key and should only run when explicitly enabled
-    // Run with: cargo test --features integration-tests
+    // Run with: cargo test --features e2e-tests
 
     fn get_test_config() -> Option<OpenAIConfig> {
         dotenv().ok();

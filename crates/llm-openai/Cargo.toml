@@ -25,3 +25,4 @@ e2e-tests = []
 
 [dev-dependencies]
 dotenv = "0.15"
+tracing-subscriber = "0.3.19"

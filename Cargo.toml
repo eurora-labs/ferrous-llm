@@ -26,7 +26,8 @@ llm-core = { path = "crates/llm-core" }
 llm-memory = { path = "crates/llm-memory" }
 
 [features]
-e2e-tests = []
+default = []
+openai = []
 
 [workspace.dev-dependencies]
 tracing-subscriber = "0.3.19"
@@ -62,3 +63,4 @@ opt-level = 3
 incremental = true
 codegen-units = 256
 overflow-checks = false
+

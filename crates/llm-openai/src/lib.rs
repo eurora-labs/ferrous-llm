@@ -12,7 +12,11 @@ pub mod types;
 pub use config::OpenAIConfig;
 pub use error::OpenAIError;
 pub use provider::OpenAIProvider;
-pub use types::*;
+pub use types::{
+    OpenAIChatChoice, OpenAIChatRequest, OpenAIChatResponse, OpenAICompletionChoice,
+    OpenAICompletionRequest, OpenAICompletionResponse, OpenAIEmbeddingsRequest,
+    OpenAIEmbeddingsResponse, OpenAIMessage, OpenAITool, OpenAIToolCall, OpenAIUsage,
+};
 
 // Re-export core traits
 pub use llm_core::{

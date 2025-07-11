@@ -25,6 +25,9 @@ pub struct OpenAIConfig {
 
     /// HTTP client configuration
     pub http: HttpConfig,
+
+    /// Embedding model to use (e.g., "text-embedding-ada-002")
+    pub embedding_model: Option<String>,
 }
 
 impl Default for OpenAIConfig {
@@ -36,6 +39,7 @@ impl Default for OpenAIConfig {
             organization: None,
             project: None,
             http: HttpConfig::default(),
+            embedding_model: None,
         }
     }
 }
@@ -146,6 +150,7 @@ impl OpenAIConfig {
             organization,
             project,
             http: HttpConfig::default(),
+            embedding_model: None,
         })
     }
 }

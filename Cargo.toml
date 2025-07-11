@@ -25,11 +25,13 @@ thiserror = "2.0.12"
 llm-core = { path = "crates/llm-core" }
 llm-memory = { path = "crates/llm-memory" }
 llm-ollama = { path = "crates/llm-ollama" }
+llm-anthropic = { path = "crates/llm-anthropic" }
 
 [features]
 default = []
 openai = ["llm-openai"]
 ollama = ["llm-ollama"]
+anthropic = ["llm-anthropic"]
 
 # Add workspace-level package for e2e tests
 [package]
@@ -41,6 +43,7 @@ edition.workspace = true
 llm-core = { path = "crates/llm-core" }
 llm-openai = { path = "crates/llm-openai", optional = true }
 llm-ollama = { path = "crates/llm-ollama", optional = true }
+llm-anthropic = { path = "crates/llm-anthropic", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

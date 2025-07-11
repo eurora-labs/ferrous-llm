@@ -10,6 +10,7 @@ use llm_core::{
 use reqwest::{Client, RequestBuilder};
 use serde_json::json;
 use std::pin::Pin;
+use tokio_stream::{StreamExt, wrappers::ReceiverStream};
 
 /// OpenAI provider implementation.
 pub struct OpenAIProvider {
@@ -272,12 +273,75 @@ impl StreamingProvider for OpenAIProvider {
             return Err(OpenAIError::from_response(status, &body));
         }
 
-        // For now, return a simple stream that yields a single message
-        // This is a simplified implementation to get compilation working
-        let stream =
-            futures::stream::once(async { Ok("Streaming not fully implemented yet".to_string()) });
+        // Create a tokio channel for streaming
+        let (tx, rx) = tokio::sync::mpsc::channel::<Result<String, OpenAIError>>(100);
 
-        Ok(Box::pin(stream))
+        // Spawn a task to process the SSE stream
+        let tx_clone = tx.clone();
+        tokio::spawn(async move {
+            let mut byte_stream = response.bytes_stream();
+            let mut buffer = Vec::new();
+
+            while let Some(chunk_result) = byte_stream.next().await {
+                match chunk_result {
+                    Ok(chunk) => {
+                        buffer.extend_from_slice(chunk.as_ref());
+
+                        // Process complete lines
+                        let mut start = 0;
+                        while let Some(pos) = buffer[start..].iter().position(|&b| b == b'\n') {
+                            let line_end = start + pos;
+                            let line = String::from_utf8_lossy(&buffer[start..line_end])
+                                .trim()
+                                .to_string();
+                            start = line_end + 1;
+
+                            // Process SSE format: "data: {json}" or "data: [DONE]"
+                            if line.starts_with("data: ") {
+                                let data = &line[6..]; // Remove "data: " prefix
+
+                                if data == "[DONE]" {
+                                    // End of stream
+                                    drop(tx_clone);
+                                    return;
+                                }
+
+                                // Try to parse the JSON chunk
+                                if let Ok(chunk) = serde_json::from_str::<OpenAIStreamChunk>(data) {
+                                    // Extract content from the first choice's delta
+                                    if let Some(choice) = chunk.choices.first() {
+                                        if let Some(content) = &choice.delta.content {
+                                            if !content.is_empty() {
+                                                if tx_clone.send(Ok(content.clone())).await.is_err()
+                                                {
+                                                    // Receiver dropped
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Keep remaining bytes in buffer
+                        buffer.drain(0..start);
+                    }
+                    Err(e) => {
+                        let _ = tx_clone.send(Err(OpenAIError::Network { source: e })).await;
+                        return;
+                    }
+                }
+            }
+
+            // Close the channel when done
+            drop(tx_clone);
+        });
+
+        // Convert the receiver to a stream
+        let content_stream = ReceiverStream::new(rx);
+
+        Ok(Box::pin(content_stream))
     }
 }
 

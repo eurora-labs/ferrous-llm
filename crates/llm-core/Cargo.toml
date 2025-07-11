@@ -4,3 +4,14 @@ version.workspace = true
 description = "Core LLM library"
 authors.workspace = true
 edition.workspace = true
+
+[dependencies]
+async-trait = "0.1"
+chrono = { workspace = true, features = ["serde"] }
+futures.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["full"] }
+url = { version = "2.0", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }

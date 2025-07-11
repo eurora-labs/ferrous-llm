@@ -101,9 +101,6 @@ pub struct HttpConfig {
     /// Additional HTTP headers to include in requests
     pub headers: std::collections::HashMap<String, String>,
 
-    /// Whether to enable HTTP/2
-    pub http2: bool,
-
     /// Whether to enable compression
     pub compression: bool,
 
@@ -171,7 +168,6 @@ impl Default for HttpConfig {
             max_retry_delay: Duration::from_secs(60),
             user_agent: Some("llm-core/2.0".to_string()),
             headers: std::collections::HashMap::new(),
-            http2: true,
             compression: true,
             pool: PoolConfig::default(),
         }

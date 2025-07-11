@@ -5,7 +5,6 @@ members = [
 ]
 resolver = "2"
 
-
 [workspace.package]
 name = "ferrous-llm"
 version = "0.1.0"
@@ -26,8 +25,9 @@ thiserror = "2.0.12"
 llm-core = { path = "crates/llm-core" }
 llm-memory = { path = "crates/llm-memory" }
 
-[workspace.dev-dependencies]
-tracing-subscriber = "0.3.19"
+[features]
+default = []
+openai = ["llm-openai"]
 
 # Add workspace-level package for e2e tests
 [package]
@@ -37,7 +37,7 @@ edition.workspace = true
 
 [dependencies]
 llm-core = { path = "crates/llm-core" }
-# llm-openai = { path = "crates/llm-openai" }
+llm-openai = { path = "crates/llm-openai", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true
@@ -60,3 +60,4 @@ opt-level = 3
 incremental = true
 codegen-units = 256
 overflow-checks = false
+

@@ -297,9 +297,7 @@ impl StreamingProvider for OpenAIProvider {
                             start = line_end + 1;
 
                             // Process SSE format: "data: {json}" or "data: [DONE]"
-                            if line.starts_with("data: ") {
-                                let data = &line[6..]; // Remove "data: " prefix
-
+                            if let Some(data) = line.strip_prefix("data: ") {
                                 if data == "[DONE]" {
                                     // End of stream
                                     drop(tx_clone);
@@ -311,12 +309,11 @@ impl StreamingProvider for OpenAIProvider {
                                     // Extract content from the first choice's delta
                                     if let Some(choice) = chunk.choices.first() {
                                         if let Some(content) = &choice.delta.content {
-                                            if !content.is_empty() {
-                                                if tx_clone.send(Ok(content.clone())).await.is_err()
-                                                {
-                                                    // Receiver dropped
-                                                    return;
-                                                }
+                                            if !content.is_empty()
+                                                && tx_clone.send(Ok(content.clone())).await.is_err()
+                                            {
+                                                // Receiver dropped
+                                                return;
                                             }
                                         }
                                     }

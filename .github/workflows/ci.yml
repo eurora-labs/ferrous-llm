@@ -24,9 +24,8 @@ jobs:
                   export DISPLAY=:99
                   Xvfb :99 -screen 0 1024x768x24 &
             - run: cargo fmt -- --check
-            - run: cargo clippy --all-features -- -D warnings
+            - run: cargo clippy --all-targets --all-features -- -D warnings
             - name: Test
-              run: cargo test --all --all-features -- --test-threads=1
+              run: cargo test --all -- --test-threads=1
               env:
                   INTEGRATION_TEST: 1
-

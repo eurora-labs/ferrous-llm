@@ -510,8 +510,18 @@ impl From<&llm_core::Message> for OpenAIMessage {
                         }),
                         llm_core::ContentPart::Audio { audio_url, format } => serde_json::json!({
                             "type": "audio",
-                            "audio_url": audio_url,
-                            "format": format.as_deref().unwrap_or("mp3")
+                            "audio": {
+                                "mime_type": format
+                                .as_deref()
+                                .map(|f| format!("audio/{}", f))
+                                .unwrap_or_else(|| "audio/mpeg".to_string()),
+                                "segments": [
+                                    {
+                                        "url": audio_url,
+                                        // Add `"caption": "<caption>"` here if available
+                                    }
+                                ]
+                            }
                         }),
                     })
                     .collect();

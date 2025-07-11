@@ -290,7 +290,7 @@ fn test_openai_usage_conversion() {
 #[test]
 fn test_openai_chat_response_trait() {
     let openai_response = OpenAIChatResponse {
-        id: "chatcmpl-123".to_string(),
+        id: "chat-123".to_string(),
         object: "chat.completion".to_string(),
         created: 1234567890,
         model: "gpt-4".to_string(),
@@ -390,7 +390,7 @@ fn test_openai_request_serialization() {
 #[test]
 fn test_openai_response_deserialization() {
     let json = r#"{
-        "id": "chatcmpl-123",
+        "id": "chat-123",
         "object": "chat.completion",
         "created": 1234567890,
         "model": "gpt-4",
@@ -410,7 +410,7 @@ fn test_openai_response_deserialization() {
     }"#;
 
     let response: OpenAIChatResponse = serde_json::from_str(json).unwrap();
-    assert_eq!(response.id, "chatcmpl-123");
+    assert_eq!(response.id, "chat-123");
     assert_eq!(response.model, "gpt-4");
     assert_eq!(response.choices.len(), 1);
     assert_eq!(response.choices[0].message.role, "assistant");
@@ -421,9 +421,9 @@ fn test_openai_response_deserialization() {
 #[test]
 fn test_openai_provider_request_conversion() {
     let config = OpenAIConfig::new("sk-test123456789", "gpt-4");
-    let provider = OpenAIProvider::new(config).unwrap();
+    let _provider = OpenAIProvider::new(config).unwrap();
 
-    let core_request = ChatRequest::builder()
+    let _core_request = ChatRequest::builder()
         .message(Message::user("Hello"))
         .temperature(0.8)
         .max_tokens(150)

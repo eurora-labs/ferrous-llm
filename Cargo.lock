@@ -707,6 +707,25 @@ name = "llm-memory"
 version = "0.1.0"
 
 [[package]]
+name = "llm-ollama"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "dotenv",
+ "futures",
+ "llm-core",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tracing-subscriber",
+ "url",
+]
+
+[[package]]
 name = "llm-openai"
 version = "0.1.0"
 dependencies = [
@@ -733,6 +752,7 @@ dependencies = [
  "dotenv",
  "futures",
  "llm-core",
+ "llm-ollama",
  "llm-openai",
  "serde_json",
  "thiserror",

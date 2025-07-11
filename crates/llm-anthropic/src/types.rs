@@ -1,6 +1,6 @@
 //! Anthropic-specific request and response types.
 
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use llm_core::{ChatResponse, FinishReason, FunctionCall, Metadata, ToolCall, Usage};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -251,24 +251,12 @@ fn extract_text_content(content: &[AnthropicContentBlock]) -> String {
 
 // Implement ChatResponse for AnthropicMessagesResponseWrapper
 impl ChatResponse for AnthropicMessagesResponseWrapper {
-    fn content(&self) -> &str {
-        // We need to store the extracted text to return a reference
-        // This is a limitation of the current design - we'll use a static approach
-        thread_local! {
-            static CONTENT_CACHE: std::cell::RefCell<String> = const { std::cell::RefCell::new(String::new()) };
-        }
-
-        CONTENT_CACHE.with(|cache| {
-            let mut cache = cache.borrow_mut();
-            *cache = extract_text_content(&self.response.content);
-            // This is unsafe but necessary due to the trait design
-            // In practice, this should work as long as the response wrapper lives longer than the content access
-            unsafe { std::mem::transmute(cache.as_str()) }
-        })
+    fn content(&self) -> String {
+        extract_text_content(&self.response.content)
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        Some(&self.converted_usage)
+    fn usage(&self) -> Option<Usage> {
+        Some(self.converted_usage.clone())
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -284,33 +272,27 @@ impl ChatResponse for AnthropicMessagesResponseWrapper {
             })
     }
 
-    fn metadata(&self) -> &Metadata {
-        &self.converted_metadata
+    fn metadata(&self) -> Metadata {
+        self.converted_metadata.clone()
     }
 
-    fn tool_calls(&self) -> Option<&[ToolCall]> {
-        self.converted_tool_calls.as_deref()
+    fn tool_calls(&self) -> Option<Vec<ToolCall>> {
+        self.converted_tool_calls.clone()
     }
 }
 
 // Implement ChatResponse for AnthropicMessagesResponse
 impl ChatResponse for AnthropicMessagesResponse {
-    fn content(&self) -> &str {
-        // Similar thread-local approach for direct response
-        thread_local! {
-            static CONTENT_CACHE: std::cell::RefCell<String> = const { std::cell::RefCell::new(String::new()) };
-        }
-
-        CONTENT_CACHE.with(|cache| {
-            let mut cache = cache.borrow_mut();
-            *cache = extract_text_content(&self.content);
-            unsafe { std::mem::transmute(cache.as_str()) }
-        })
+    fn content(&self) -> String {
+        extract_text_content(&self.content)
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        // Direct conversion not possible due to lifetime constraints
-        None
+    fn usage(&self) -> Option<Usage> {
+        Some(Usage {
+            prompt_tokens: self.usage.input_tokens,
+            completion_tokens: self.usage.output_tokens,
+            total_tokens: self.usage.input_tokens + self.usage.output_tokens,
+        })
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -325,20 +307,17 @@ impl ChatResponse for AnthropicMessagesResponse {
             })
     }
 
-    fn metadata(&self) -> &Metadata {
-        use std::sync::LazyLock;
-        static EMPTY_METADATA: LazyLock<Metadata> = LazyLock::new(|| Metadata {
+    fn metadata(&self) -> Metadata {
+        Metadata {
             extensions: HashMap::new(),
-            request_id: None,
+            request_id: Some(self.id.clone()),
             user_id: None,
-            created_at: DateTime::UNIX_EPOCH,
-        });
-        &EMPTY_METADATA
+            created_at: Utc::now(), // Anthropic doesn't provide timestamp
+        }
     }
 
-    fn tool_calls(&self) -> Option<&[ToolCall]> {
-        // Direct conversion not possible due to lifetime constraints
-        None
+    fn tool_calls(&self) -> Option<Vec<ToolCall>> {
+        extract_tool_calls(&self.content)
     }
 }
 

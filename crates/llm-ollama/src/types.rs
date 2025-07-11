@@ -277,12 +277,12 @@ impl OllamaCompletionResponseWrapper {
 
 // Implement ChatResponse for OllamaChatResponseWrapper
 impl ChatResponse for OllamaChatResponseWrapper {
-    fn content(&self) -> &str {
-        &self.response.message.content
+    fn content(&self) -> String {
+        self.response.message.content.clone()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        self.converted_usage.as_ref()
+    fn usage(&self) -> Option<Usage> {
+        self.converted_usage.clone()
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -293,11 +293,11 @@ impl ChatResponse for OllamaChatResponseWrapper {
         }
     }
 
-    fn metadata(&self) -> &Metadata {
-        &self.converted_metadata
+    fn metadata(&self) -> Metadata {
+        self.converted_metadata.clone()
     }
 
-    fn tool_calls(&self) -> Option<&[llm_core::ToolCall]> {
+    fn tool_calls(&self) -> Option<Vec<llm_core::ToolCall>> {
         // Ollama doesn't support tool calls in the same way as OpenAI
         None
     }
@@ -305,12 +305,12 @@ impl ChatResponse for OllamaChatResponseWrapper {
 
 // Implement CompletionResponse for OllamaCompletionResponseWrapper
 impl CompletionResponse for OllamaCompletionResponseWrapper {
-    fn text(&self) -> &str {
-        &self.response.response
+    fn text(&self) -> String {
+        self.response.response.clone()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        self.converted_usage.as_ref()
+    fn usage(&self) -> Option<Usage> {
+        self.converted_usage.clone()
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -321,20 +321,24 @@ impl CompletionResponse for OllamaCompletionResponseWrapper {
         }
     }
 
-    fn metadata(&self) -> &Metadata {
-        &self.converted_metadata
+    fn metadata(&self) -> Metadata {
+        self.converted_metadata.clone()
     }
 }
 
 // Implement ChatResponse for OllamaChatResponse (direct implementation)
 impl ChatResponse for OllamaChatResponse {
-    fn content(&self) -> &str {
-        &self.message.content
+    fn content(&self) -> String {
+        self.message.content.clone()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        // Direct conversion not possible due to lifetime constraints
-        None
+    fn usage(&self) -> Option<Usage> {
+        // Convert from Ollama usage if available
+        Some(Usage {
+            prompt_tokens: self.prompt_eval_count.unwrap_or(0),
+            completion_tokens: self.eval_count.unwrap_or(0),
+            total_tokens: self.prompt_eval_count.unwrap_or(0) + self.eval_count.unwrap_or(0),
+        })
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -345,32 +349,47 @@ impl ChatResponse for OllamaChatResponse {
         }
     }
 
-    fn metadata(&self) -> &Metadata {
-        // Return static empty metadata for compatibility
-        use std::sync::LazyLock;
-        static EMPTY_METADATA: LazyLock<Metadata> = LazyLock::new(|| Metadata {
-            extensions: HashMap::new(),
+    fn metadata(&self) -> Metadata {
+        let mut extensions = HashMap::new();
+        if let Some(total_duration) = self.total_duration {
+            extensions.insert(
+                "total_duration_ns".to_string(),
+                serde_json::Value::Number(total_duration.into()),
+            );
+        }
+        if let Some(load_duration) = self.load_duration {
+            extensions.insert(
+                "load_duration_ns".to_string(),
+                serde_json::Value::Number(load_duration.into()),
+            );
+        }
+
+        Metadata {
+            extensions,
             request_id: None,
             user_id: None,
-            created_at: DateTime::UNIX_EPOCH,
-        });
-        &EMPTY_METADATA
+            created_at: parse_ollama_timestamp(&self.created_at).unwrap_or_else(Utc::now),
+        }
     }
 
-    fn tool_calls(&self) -> Option<&[llm_core::ToolCall]> {
+    fn tool_calls(&self) -> Option<Vec<llm_core::ToolCall>> {
         None
     }
 }
 
 // Implement CompletionResponse for OllamaCompletionResponse (direct implementation)
 impl CompletionResponse for OllamaCompletionResponse {
-    fn text(&self) -> &str {
-        &self.response
+    fn text(&self) -> String {
+        self.response.clone()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        // Direct conversion not possible due to lifetime constraints
-        None
+    fn usage(&self) -> Option<Usage> {
+        // Convert from Ollama usage if available
+        Some(Usage {
+            prompt_tokens: self.prompt_eval_count.unwrap_or(0),
+            completion_tokens: self.eval_count.unwrap_or(0),
+            total_tokens: self.prompt_eval_count.unwrap_or(0) + self.eval_count.unwrap_or(0),
+        })
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -381,16 +400,27 @@ impl CompletionResponse for OllamaCompletionResponse {
         }
     }
 
-    fn metadata(&self) -> &Metadata {
-        // Return static empty metadata for compatibility
-        use std::sync::LazyLock;
-        static EMPTY_METADATA: LazyLock<Metadata> = LazyLock::new(|| Metadata {
-            extensions: HashMap::new(),
+    fn metadata(&self) -> Metadata {
+        let mut extensions = HashMap::new();
+        if let Some(total_duration) = self.total_duration {
+            extensions.insert(
+                "total_duration_ns".to_string(),
+                serde_json::Value::Number(total_duration.into()),
+            );
+        }
+        if let Some(load_duration) = self.load_duration {
+            extensions.insert(
+                "load_duration_ns".to_string(),
+                serde_json::Value::Number(load_duration.into()),
+            );
+        }
+
+        Metadata {
+            extensions,
             request_id: None,
             user_id: None,
-            created_at: DateTime::UNIX_EPOCH,
-        });
-        &EMPTY_METADATA
+            created_at: parse_ollama_timestamp(&self.created_at).unwrap_or_else(Utc::now),
+        }
     }
 }
 

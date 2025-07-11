@@ -318,19 +318,19 @@ impl OpenAICompletionResponseWrapper {
 
 // Implement ChatResponse for OpenAIChatResponseWrapper
 impl ChatResponse for OpenAIChatResponseWrapper {
-    fn content(&self) -> &str {
+    fn content(&self) -> String {
         self.response
             .choices
             .first()
             .and_then(|choice| match &choice.message.content {
-                Some(serde_json::Value::String(s)) => Some(s.as_str()),
+                Some(serde_json::Value::String(s)) => Some(s.clone()),
                 _ => None,
             })
-            .unwrap_or("")
+            .unwrap_or_default()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        self.converted_usage.as_ref()
+    fn usage(&self) -> Option<Usage> {
+        self.converted_usage.clone()
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -347,27 +347,27 @@ impl ChatResponse for OpenAIChatResponseWrapper {
             })
     }
 
-    fn metadata(&self) -> &Metadata {
-        &self.converted_metadata
+    fn metadata(&self) -> Metadata {
+        self.converted_metadata.clone()
     }
 
-    fn tool_calls(&self) -> Option<&[ToolCall]> {
-        self.converted_tool_calls.as_deref()
+    fn tool_calls(&self) -> Option<Vec<ToolCall>> {
+        self.converted_tool_calls.clone()
     }
 }
 
 // Implement CompletionResponse for OpenAICompletionResponseWrapper
 impl CompletionResponse for OpenAICompletionResponseWrapper {
-    fn text(&self) -> &str {
+    fn text(&self) -> String {
         self.response
             .choices
             .first()
-            .map(|choice| choice.text.as_str())
-            .unwrap_or("")
+            .map(|choice| choice.text.clone())
+            .unwrap_or_default()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        self.converted_usage.as_ref()
+    fn usage(&self) -> Option<Usage> {
+        self.converted_usage.clone()
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -382,26 +382,28 @@ impl CompletionResponse for OpenAICompletionResponseWrapper {
             })
     }
 
-    fn metadata(&self) -> &Metadata {
-        &self.converted_metadata
+    fn metadata(&self) -> Metadata {
+        self.converted_metadata.clone()
     }
 }
 
 // Implement ChatResponse for OpenAIChatResponse
 impl ChatResponse for OpenAIChatResponse {
-    fn content(&self) -> &str {
+    fn content(&self) -> String {
         self.choices
             .first()
             .and_then(|choice| choice.message.content.as_ref())
             .and_then(|content| content.as_str())
             .unwrap_or("")
+            .to_string()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        // Note: Direct conversion from OpenAIUsage to Usage is not possible
-        // due to lifetime constraints. Use OpenAIChatResponseWrapper for proper conversion.
-        // This method returns None to maintain API compatibility.
-        None
+    fn usage(&self) -> Option<Usage> {
+        self.usage.as_ref().map(|usage| Usage {
+            prompt_tokens: usage.prompt_tokens,
+            completion_tokens: usage.completion_tokens,
+            total_tokens: usage.total_tokens,
+        })
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -417,42 +419,50 @@ impl ChatResponse for OpenAIChatResponse {
             })
     }
 
-    fn metadata(&self) -> &Metadata {
-        // Note: Direct conversion from OpenAI metadata is not possible
-        // due to lifetime constraints. Use OpenAIChatResponseWrapper for proper conversion.
-        // This method returns a static empty metadata to maintain API compatibility.
-        use std::sync::LazyLock;
-        static EMPTY_METADATA: LazyLock<Metadata> = LazyLock::new(|| Metadata {
+    fn metadata(&self) -> Metadata {
+        Metadata {
             extensions: HashMap::new(),
-            request_id: None,
+            request_id: Some(self.id.clone()),
             user_id: None,
-            created_at: DateTime::UNIX_EPOCH,
-        });
-        &EMPTY_METADATA
+            created_at: DateTime::from_timestamp(self.created as i64, 0).unwrap_or_else(Utc::now),
+        }
     }
 
-    fn tool_calls(&self) -> Option<&[ToolCall]> {
-        // Note: Direct conversion from OpenAI tool calls is not possible
-        // due to lifetime constraints. Use OpenAIChatResponseWrapper for proper conversion.
-        // This method returns None to maintain API compatibility.
-        None
+    fn tool_calls(&self) -> Option<Vec<ToolCall>> {
+        self.choices
+            .first()
+            .and_then(|choice| choice.message.tool_calls.as_ref())
+            .map(|tool_calls| {
+                tool_calls
+                    .iter()
+                    .map(|tc| ToolCall {
+                        id: tc.id.clone(),
+                        call_type: tc.call_type.clone(),
+                        function: FunctionCall {
+                            name: tc.function.name.clone(),
+                            arguments: tc.function.arguments.clone(),
+                        },
+                    })
+                    .collect()
+            })
     }
 }
 
 // Implement CompletionResponse for OpenAICompletionResponse
 impl CompletionResponse for OpenAICompletionResponse {
-    fn text(&self) -> &str {
+    fn text(&self) -> String {
         self.choices
             .first()
-            .map(|choice| choice.text.as_str())
-            .unwrap_or("")
+            .map(|choice| choice.text.clone())
+            .unwrap_or_default()
     }
 
-    fn usage(&self) -> Option<&Usage> {
-        // Note: Direct conversion from OpenAIUsage to Usage is not possible
-        // due to lifetime constraints. Use OpenAICompletionResponseWrapper for proper conversion.
-        // This method returns None to maintain API compatibility.
-        None
+    fn usage(&self) -> Option<Usage> {
+        self.usage.as_ref().map(|usage| Usage {
+            prompt_tokens: usage.prompt_tokens,
+            completion_tokens: usage.completion_tokens,
+            total_tokens: usage.total_tokens,
+        })
     }
 
     fn finish_reason(&self) -> Option<FinishReason> {
@@ -466,18 +476,13 @@ impl CompletionResponse for OpenAICompletionResponse {
             })
     }
 
-    fn metadata(&self) -> &Metadata {
-        // Note: Direct conversion from OpenAI metadata is not possible
-        // due to lifetime constraints. Use OpenAICompletionResponseWrapper for proper conversion.
-        // This method returns a static empty metadata to maintain API compatibility.
-        use std::sync::LazyLock;
-        static EMPTY_METADATA: LazyLock<Metadata> = LazyLock::new(|| Metadata {
+    fn metadata(&self) -> Metadata {
+        Metadata {
             extensions: HashMap::new(),
-            request_id: None,
+            request_id: Some(self.id.clone()),
             user_id: None,
-            created_at: DateTime::UNIX_EPOCH,
-        });
-        &EMPTY_METADATA
+            created_at: DateTime::from_timestamp(self.created as i64, 0).unwrap_or_else(Utc::now),
+        }
     }
 }
 

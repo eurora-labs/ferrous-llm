@@ -5,8 +5,11 @@ use llm_anthropic::{AnthropicConfig, AnthropicProvider};
 #[cfg(feature = "e2e-tests")]
 mod e2e {
     use super::*;
+    use dotenv::dotenv;
     use futures::StreamExt;
-    use llm_core::{StreamingProvider, Tool, ToolProvider};
+    use llm_core::{
+        ChatProvider, ChatRequest, ChatResponse, Message, Metadata, Parameters, StreamingProvider,
+    };
 
     fn create_test_config() -> AnthropicConfig {
         dotenv().ok();
@@ -93,7 +96,7 @@ mod e2e {
         let provider = AnthropicProvider::new(config).expect("Failed to create provider");
 
         let request = ChatRequest {
-            messages: vec![Message::user("Count from 1 to 5, one number per line.")],
+            messages: vec![Message::user("Count from 1 to 10, one number per line.")],
             parameters: Parameters {
                 max_tokens: Some(100),
                 temperature: Some(0.1),
@@ -114,7 +117,7 @@ mod e2e {
                 Ok(chunk) => {
                     content.push_str(&chunk);
                     chunk_count += 1;
-                    print!("{chunk}");
+                    print!("{}", chunk);
                 }
                 Err(e) => panic!("Stream error: {:?}", e),
             }

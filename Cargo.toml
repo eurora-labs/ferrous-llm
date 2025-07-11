@@ -27,7 +27,7 @@ llm-memory = { path = "crates/llm-memory" }
 
 [features]
 default = []
-openai = []
+openai = ["llm-openai"]
 
 # Add workspace-level package for e2e tests
 [package]
@@ -37,7 +37,7 @@ edition.workspace = true
 
 [dependencies]
 llm-core = { path = "crates/llm-core" }
-llm-openai = { path = "crates/llm-openai" }
+llm-openai = { path = "crates/llm-openai", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

@@ -9,7 +9,6 @@ use crate::error::ProviderError;
 use crate::types::*;
 use async_trait::async_trait;
 use futures::Stream;
-use std::error::Error;
 
 /// Base trait for chat-based LLM providers.
 ///

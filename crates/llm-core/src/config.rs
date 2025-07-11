@@ -7,7 +7,6 @@ use crate::error::ConfigError;
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::time::Duration;
-use url::Url;
 
 /// Trait for provider configuration types.
 ///

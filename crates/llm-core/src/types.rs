@@ -7,7 +7,6 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
-use uuid::Uuid;
 
 /// A chat request containing messages and parameters.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -32,7 +31,7 @@ pub struct CompletionRequest {
 }
 
 /// Common parameters used across providers.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Parameters {
     /// Controls randomness in the response (0.0 to 2.0)
     pub temperature: Option<f32>,
@@ -392,20 +391,6 @@ impl Message {
     }
 }
 
-impl Default for Parameters {
-    fn default() -> Self {
-        Self {
-            temperature: None,
-            max_tokens: None,
-            top_p: None,
-            top_k: None,
-            stop_sequences: Vec::new(),
-            frequency_penalty: None,
-            presence_penalty: None,
-        }
-    }
-}
-
 impl Default for Metadata {
     fn default() -> Self {
         Self {
@@ -429,6 +414,12 @@ pub struct ChatRequestBuilder {
     messages: Vec<Message>,
     parameters: Parameters,
     metadata: Metadata,
+}
+
+impl Default for ChatRequestBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ChatRequestBuilder {

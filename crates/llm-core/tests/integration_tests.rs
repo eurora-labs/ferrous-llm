@@ -1,8 +1,6 @@
 //! Integration tests for llm-core.
 
 use llm_core::*;
-use std::collections::HashMap;
-use std::time::Duration;
 
 #[test]
 fn test_message_creation() {

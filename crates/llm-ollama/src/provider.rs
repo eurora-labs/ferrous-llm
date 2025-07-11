@@ -447,4 +447,227 @@ mod tests {
             "http://localhost:11434/api/embeddings"
         );
     }
+
+    #[test]
+    fn test_apply_parameters_to_options_with_empty_parameters() {
+        // Test that empty parameters return existing options unchanged
+        let empty_params = Parameters::default();
+        let existing_options = Some(json!({
+            "temperature": 0.5,
+            "existing_field": "value"
+        }));
+
+        let result =
+            OllamaProvider::apply_parameters_to_options(&empty_params, existing_options.clone());
+        assert_eq!(result, existing_options);
+
+        // Test that empty parameters with no existing options return None
+        let result = OllamaProvider::apply_parameters_to_options(&empty_params, None);
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_create_new_options() {
+        // Test creating new options when none exist
+        let params = Parameters {
+            temperature: Some(0.8),
+            max_tokens: Some(150),
+            top_p: Some(0.9),
+            top_k: Some(40),
+            stop_sequences: vec!["STOP".to_string(), "END".to_string()],
+            ..Default::default()
+        };
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, None);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert!((options["temperature"].as_f64().unwrap() - 0.8).abs() < 1e-6);
+        assert_eq!(options["num_predict"], json!(150));
+        assert!((options["top_p"].as_f64().unwrap() - 0.9).abs() < 1e-6);
+        assert_eq!(options["top_k"], json!(40));
+        assert_eq!(options["stop"], json!(["STOP", "END"]));
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_merge_with_existing() {
+        // Test merging parameters into existing options
+        let params = Parameters {
+            temperature: Some(0.7),
+            max_tokens: Some(200),
+            top_p: Some(0.95),
+            ..Default::default()
+        };
+
+        let existing_options = Some(json!({
+            "temperature": 0.5,
+            "existing_field": "preserved_value",
+            "another_field": 42
+        }));
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, existing_options);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        // Check that new parameters override existing ones
+        assert!((options["temperature"].as_f64().unwrap() - 0.7).abs() < 1e-6);
+        assert_eq!(options["num_predict"], json!(200));
+        assert!((options["top_p"].as_f64().unwrap() - 0.95).abs() < 1e-6);
+
+        // Check that existing fields are preserved
+        assert_eq!(options["existing_field"], json!("preserved_value"));
+        assert_eq!(options["another_field"], json!(42));
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_partial_parameters() {
+        // Test with only some parameters set
+        let params = Parameters {
+            temperature: Some(0.6),
+            stop_sequences: vec!["HALT".to_string()],
+            ..Default::default()
+        };
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, None);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert!((options["temperature"].as_f64().unwrap() - 0.6).abs() < 1e-6);
+        assert_eq!(options["stop"], json!(["HALT"]));
+
+        // Check that unset parameters are not included
+        assert!(!options.as_object().unwrap().contains_key("num_predict"));
+        assert!(!options.as_object().unwrap().contains_key("top_p"));
+        assert!(!options.as_object().unwrap().contains_key("top_k"));
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_all_parameters() {
+        // Test with all supported parameters set
+        let params = Parameters {
+            temperature: Some(1.2),
+            max_tokens: Some(500),
+            top_p: Some(0.85),
+            top_k: Some(25),
+            stop_sequences: vec!["STOP".to_string(), "END".to_string(), "FINISH".to_string()],
+            frequency_penalty: Some(0.5), // This should be ignored as it's not supported by Ollama
+            presence_penalty: Some(0.3),  // This should be ignored as it's not supported by Ollama
+        };
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, None);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert!((options["temperature"].as_f64().unwrap() - 1.2).abs() < 1e-6);
+        assert_eq!(options["num_predict"], json!(500));
+        assert!((options["top_p"].as_f64().unwrap() - 0.85).abs() < 1e-6);
+        assert_eq!(options["top_k"], json!(25));
+        assert_eq!(options["stop"], json!(["STOP", "END", "FINISH"]));
+
+        // Verify unsupported parameters are not included
+        assert!(
+            !options
+                .as_object()
+                .unwrap()
+                .contains_key("frequency_penalty")
+        );
+        assert!(
+            !options
+                .as_object()
+                .unwrap()
+                .contains_key("presence_penalty")
+        );
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_overwrite_existing_array() {
+        // Test that stop sequences completely replace existing ones
+        let params = Parameters {
+            stop_sequences: vec!["NEW_STOP".to_string()],
+            ..Default::default()
+        };
+
+        let existing_options = Some(json!({
+            "stop": ["OLD_STOP1", "OLD_STOP2"],
+            "temperature": 0.5
+        }));
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, existing_options);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert_eq!(options["stop"], json!(["NEW_STOP"]));
+        assert_eq!(options["temperature"], json!(0.5)); // Preserved
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_empty_stop_sequences() {
+        // Test that empty stop sequences are not included
+        let params = Parameters {
+            temperature: Some(0.4),
+            stop_sequences: vec![], // Empty vector
+            ..Default::default()
+        };
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, None);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert!((options["temperature"].as_f64().unwrap() - 0.4).abs() < 1e-6);
+        assert!(!options.as_object().unwrap().contains_key("stop"));
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_edge_values() {
+        // Test with edge case values
+        let params = Parameters {
+            temperature: Some(0.0), // Minimum temperature
+            max_tokens: Some(1),    // Minimum tokens
+            top_p: Some(1.0),       // Maximum top_p
+            top_k: Some(1),         // Minimum top_k
+            ..Default::default()
+        };
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, None);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert!((options["temperature"].as_f64().unwrap() - 0.0).abs() < 1e-6);
+        assert_eq!(options["num_predict"], json!(1));
+        assert!((options["top_p"].as_f64().unwrap() - 1.0).abs() < 1e-6);
+        assert_eq!(options["top_k"], json!(1));
+    }
+
+    #[test]
+    fn test_apply_parameters_to_options_preserve_non_conflicting_fields() {
+        // Test that non-conflicting existing fields are preserved
+        let params = Parameters {
+            temperature: Some(0.9),
+            ..Default::default()
+        };
+
+        let existing_options = Some(json!({
+            "custom_field": "custom_value",
+            "nested_object": {
+                "inner_field": "inner_value"
+            },
+            "array_field": [1, 2, 3],
+            "boolean_field": true,
+            "number_field": 123.45
+        }));
+
+        let result = OllamaProvider::apply_parameters_to_options(&params, existing_options);
+        assert!(result.is_some());
+
+        let options = result.unwrap();
+        assert!((options["temperature"].as_f64().unwrap() - 0.9).abs() < 1e-6);
+        assert_eq!(options["custom_field"], json!("custom_value"));
+        assert_eq!(
+            options["nested_object"]["inner_field"],
+            json!("inner_value")
+        );
+        assert_eq!(options["array_field"], json!([1, 2, 3]));
+        assert_eq!(options["boolean_field"], json!(true));
+        assert!((options["number_field"].as_f64().unwrap() - 123.45).abs() < 1e-6);
+    }
 }

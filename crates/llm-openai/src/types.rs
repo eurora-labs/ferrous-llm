@@ -513,7 +513,7 @@ impl From<&llm_core::Message> for OpenAIMessage {
                             "audio": {
                                 "mime_type": format
                                 .as_deref()
-                                .map(|f| format!("audio/{}", f))
+                                .map(|f| format!("audio/{f}"))
                                 .unwrap_or_else(|| "audio/mpeg".to_string()),
                                 "segments": [
                                     {

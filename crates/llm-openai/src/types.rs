@@ -262,7 +262,7 @@ impl OpenAIChatResponseWrapper {
             request_id,
             user_id: None,
             created_at: DateTime::from_timestamp(response.created as i64, 0)
-                .unwrap_or_else(|| Utc::now()),
+                .unwrap_or_else(Utc::now),
         };
 
         let converted_tool_calls = response
@@ -305,7 +305,7 @@ impl OpenAICompletionResponseWrapper {
             request_id,
             user_id: None,
             created_at: DateTime::from_timestamp(response.created as i64, 0)
-                .unwrap_or_else(|| Utc::now()),
+                .unwrap_or_else(Utc::now),
         };
 
         Self {

@@ -241,7 +241,7 @@ pub mod validation {
     /// Validate that a URL is well-formed
     pub fn validate_url(url: &str, field_name: &str) -> Result<Url, ConfigError> {
         Url::parse(url)
-            .map_err(|_| ConfigError::invalid_value(field_name, format!("Invalid URL: {}", url)))
+            .map_err(|_| ConfigError::invalid_value(field_name, format!("Invalid URL: {url}")))
     }
 
     /// Validate that a URL is HTTPS
@@ -264,7 +264,7 @@ pub mod validation {
         if value < min || value > max {
             Err(ConfigError::invalid_value(
                 field_name,
-                format!("Value {} must be between {} and {}", value, min, max),
+                format!("Value {value} must be between {min} and {max}"),
             ))
         } else {
             Ok(())
@@ -387,7 +387,7 @@ pub mod env {
         let value = required(key)?;
         value
             .parse()
-            .map_err(|e| ConfigError::invalid_value(key, format!("Failed to parse: {}", e)))
+            .map_err(|e| ConfigError::invalid_value(key, format!("Failed to parse: {e}")))
     }
 
     /// Parse an optional environment variable as a specific type
@@ -400,7 +400,7 @@ pub mod env {
             Some(value) => value
                 .parse()
                 .map(Some)
-                .map_err(|e| ConfigError::invalid_value(key, format!("Failed to parse: {}", e))),
+                .map_err(|e| ConfigError::invalid_value(key, format!("Failed to parse: {e}"))),
             None => Ok(None),
         }
     }

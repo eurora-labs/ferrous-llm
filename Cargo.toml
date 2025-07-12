@@ -22,10 +22,10 @@ dotenv = "0.15"
 futures = "0.3"
 thiserror = "2.0.12"
 
-llm-core = { path = "crates/llm-core" }
-llm-memory = { path = "crates/llm-memory" }
-llm-ollama = { path = "crates/llm-ollama" }
-llm-anthropic = { path = "crates/llm-anthropic" }
+llm-core = { path = "crates/llm-core", version = "*"}
+llm-memory = { path = "crates/llm-memory", version = "*" }
+llm-ollama = { path = "crates/llm-ollama", version = "*" }
+llm-anthropic = { path = "crates/llm-anthropic", version = "*" }
 
 [features]
 default = []

@@ -42,9 +42,9 @@ edition.workspace = true
 
 [dependencies]
 llm-core = { workspace = true }
-llm-openai = { workspace = true }
-llm-ollama = { workspace = true }
-llm-anthropic = { workspace = true }
+llm-openai = { workspace = true, optional = true }
+llm-ollama = { workspace = true, optional = true }
+llm-anthropic = { workspace = true, optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

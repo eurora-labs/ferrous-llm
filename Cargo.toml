@@ -40,10 +40,10 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-llm-core = { path = "crates/llm-core" }
-llm-openai = { path = "crates/llm-openai", optional = true }
-llm-ollama = { path = "crates/llm-ollama", optional = true }
-llm-anthropic = { path = "crates/llm-anthropic", optional = true }
+llm-core = { path = "crates/llm-core", version = "*" }
+llm-openai = { path = "crates/llm-openai", optional = true, version = "*" }
+llm-ollama = { path = "crates/llm-ollama", optional = true, version = "*" }
+llm-anthropic = { path = "crates/llm-anthropic", optional = true, version = "*" }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

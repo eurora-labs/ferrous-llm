@@ -3,3 +3,9 @@ pub use llm_core::*;
 
 #[cfg(feature = "openai")]
 pub use llm_openai::*;
+
+#[cfg(feature = "ollama")]
+pub use llm_ollama::*;
+
+#[cfg(feature = "anthropic")]
+pub use llm_anthropic::*;

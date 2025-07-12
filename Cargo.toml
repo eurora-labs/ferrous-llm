@@ -26,6 +26,7 @@ llm-core = { path = "crates/llm-core", version = "*"}
 llm-memory = { path = "crates/llm-memory", version = "*" }
 llm-ollama = { path = "crates/llm-ollama", version = "*" }
 llm-anthropic = { path = "crates/llm-anthropic", version = "*" }
+llm-openai = { path = "crates/llm-openai", version = "*" }
 
 [features]
 default = []
@@ -40,10 +41,10 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-llm-core = { path = "crates/llm-core", version = "*" }
-llm-openai = { path = "crates/llm-openai", optional = true, version = "*" }
-llm-ollama = { path = "crates/llm-ollama", optional = true, version = "*" }
-llm-anthropic = { path = "crates/llm-anthropic", optional = true, version = "*" }
+llm-core = { workspace = true }
+llm-openai = { workspace = true, optional = true }
+llm-ollama = { workspace = true, optional = true }
+llm-anthropic = { workspace = true, optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

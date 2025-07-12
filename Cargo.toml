@@ -36,6 +36,9 @@ anthropic = ["ferrous-llm-anthropic"]
 [package]
 name = "ferrous-llm"
 version.workspace = true
+description.workspace = true
+authors.workspace = true
+license.workspace = true
 edition.workspace = true
 
 [dependencies]

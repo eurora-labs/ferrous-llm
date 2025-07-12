@@ -60,7 +60,7 @@ impl ProviderConfig for AnthropicConfig {
         }
 
         // Validate version format (should be YYYY-MM-DD)
-        if !self.version.is_empty() && !self.version.matches('-').count() == 2 {
+        if !self.version.is_empty() && self.version.matches('-').count() != 2 {
             return Err(ConfigError::invalid_value(
                 "version",
                 "Version must be in YYYY-MM-DD format",

@@ -301,7 +301,7 @@ impl ChatResponse for AnthropicMessagesResponse {
             .and_then(|reason| match reason.as_str() {
                 "end_turn" => Some(FinishReason::Stop),
                 "max_tokens" => Some(FinishReason::Length),
-                "stop_sequence" => Some(FinishReason::Stop),
+                "stop_sequence" => Some(FinishReason::StopSequence),
                 "tool_use" => Some(FinishReason::ToolCalls),
                 _ => None,
             })
@@ -328,8 +328,8 @@ impl From<&llm_core::Message> for AnthropicMessage {
             llm_core::Role::User => "user".to_string(),
             llm_core::Role::Assistant => "assistant".to_string(),
             // Anthropic handles system messages differently - they go in the system field
-            llm_core::Role::System => "user".to_string(), // Convert to user for now
-            llm_core::Role::Tool => "user".to_string(),   // Tool results become user messages
+            llm_core::Role::System => "system".to_string(),
+            llm_core::Role::Tool => "user".to_string(), // Tool results become user messages
         };
 
         let content = match &message.content {
@@ -342,16 +342,40 @@ impl From<&llm_core::Message> for AnthropicMessage {
                             AnthropicContentBlock::Text { text: text.clone() }
                         }
                         llm_core::ContentPart::Image { image_url, .. } => {
-                            // This is a simplified conversion - in practice, you'd need to
-                            // handle different image formats and convert to base64
-                            AnthropicContentBlock::Image {
-                                source: AnthropicImageSource {
-                                    source_type: "base64".to_string(),
-                                    media_type: "image/jpeg".to_string(),
-                                    data: image_url.url.clone(), // This should be base64 data
-                                },
+                            // Parse the image URL to determine if it's a data URI or external URL
+                            if image_url.url.starts_with("data:") {
+                                // Parse data URI to extract media type and base64 data
+                                // Format: data:image/jpeg;base64,<data>
+                                let parts: Vec<&str> = image_url.url.splitn(2, ',').collect();
+                                if parts.len() == 2 {
+                                    let header = parts[0];
+                                    let data = parts[1];
+                                    let media_type = header
+                                        .strip_prefix("data:")
+                                        .and_then(|s| s.split(';').next())
+                                        .unwrap_or("image/jpeg");
+                                    AnthropicContentBlock::Image {
+                                        source: AnthropicImageSource {
+                                            source_type: "base64".to_string(),
+                                            media_type: media_type.to_string(),
+                                            data: data.to_string(),
+                                        },
+                                    }
+                                } else {
+                                    // Invalid data URI, convert to text
+                                    AnthropicContentBlock::Text {
+                                        text: "[Invalid image data URI]".to_string(),
+                                    }
+                                }
+                            } else {
+                                // External URL - needs to be downloaded and converted to base64
+                                // For now, return a placeholder
+                                AnthropicContentBlock::Text {
+                                    text: format!("[Image URL not supported: {}]", image_url.url),
+                                }
                             }
                         }
+
                         llm_core::ContentPart::Audio { audio_url, .. } => {
                             // Anthropic doesn't support audio in the same way, convert to text description
                             AnthropicContentBlock::Text {

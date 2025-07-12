@@ -189,6 +189,98 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
 
 [[package]]
+name = "ferrous-llm"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "dotenv",
+ "ferrous-llm-anthropic",
+ "ferrous-llm-core",
+ "ferrous-llm-ollama",
+ "ferrous-llm-openai",
+ "futures",
+ "serde_json",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "ferrous-llm-anthropic"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "dotenv",
+ "ferrous-llm-core",
+ "futures",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tracing-subscriber",
+ "url",
+]
+
+[[package]]
+name = "ferrous-llm-core"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "futures",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "url",
+ "uuid",
+]
+
+[[package]]
+name = "ferrous-llm-memory"
+version = "0.1.0"
+
+[[package]]
+name = "ferrous-llm-ollama"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "dotenv",
+ "ferrous-llm-core",
+ "futures",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tracing-subscriber",
+ "url",
+]
+
+[[package]]
+name = "ferrous-llm-openai"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "dotenv",
+ "ferrous-llm-core",
+ "futures",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tracing-subscriber",
+ "url",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -686,98 +778,6 @@ name = "litemap"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "241eaef5fd12c88705a01fc1066c48c4b36e0dd4377dcdc7ec3942cea7a69956"
-
-[[package]]
-name = "llm-anthropic"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "chrono",
- "dotenv",
- "futures",
- "llm-core",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tracing-subscriber",
- "url",
-]
-
-[[package]]
-name = "llm-core"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "chrono",
- "futures",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "url",
- "uuid",
-]
-
-[[package]]
-name = "llm-memory"
-version = "0.1.0"
-
-[[package]]
-name = "llm-ollama"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "chrono",
- "dotenv",
- "futures",
- "llm-core",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tracing-subscriber",
- "url",
-]
-
-[[package]]
-name = "llm-openai"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "chrono",
- "dotenv",
- "futures",
- "llm-core",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tracing-subscriber",
- "url",
-]
-
-[[package]]
-name = "llm-workspace"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "dotenv",
- "futures",
- "llm-anthropic",
- "llm-core",
- "llm-ollama",
- "llm-openai",
- "serde_json",
- "thiserror",
- "tokio",
-]
 
 [[package]]
 name = "lock_api"

@@ -1,7 +1,0 @@
-
-[package]
-name = "llm-memory"
-version.workspace = true
-description = "Memory management for LLMs"
-authors.workspace = true
-edition.workspace = true

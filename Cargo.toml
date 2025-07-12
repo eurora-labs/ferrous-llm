@@ -1,12 +1,11 @@
 
 [workspace]
 members = [
-    "crates/llm-*",
+    "crates/ferrous-llm-*",
 ]
 resolver = "2"
 
 [workspace.package]
-name = "ferrous-llm"
 version = "0.1.0"
 description = "LLM library"
 authors = ["Andre Roelofs <andre@eurora-labs.com>"]
@@ -22,34 +21,35 @@ dotenv = "0.15"
 futures = "0.3"
 thiserror = "2.0.12"
 
-llm-core = { path = "crates/llm-core" }
-llm-memory = { path = "crates/llm-memory" }
-llm-ollama = { path = "crates/llm-ollama" }
-llm-anthropic = { path = "crates/llm-anthropic" }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0"}
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0" }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0" }
 
 [features]
 default = []
-openai = ["llm-openai"]
-ollama = ["llm-ollama"]
-anthropic = ["llm-anthropic"]
+openai = ["ferrous-llm-openai"]
+ollama = ["ferrous-llm-ollama"]
+anthropic = ["ferrous-llm-anthropic"]
 
 # Add workspace-level package for e2e tests
 [package]
-name = "llm-workspace"
+name = "ferrous-llm"
 version.workspace = true
 edition.workspace = true
 
 [dependencies]
-llm-core = { path = "crates/llm-core" }
-llm-openai = { path = "crates/llm-openai", optional = true }
-llm-ollama = { path = "crates/llm-ollama", optional = true }
-llm-anthropic = { path = "crates/llm-anthropic", optional = true }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0", optional = true }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0", optional = true }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true
 serde_json.workspace = true
 chrono.workspace = true
 thiserror.workspace = true
+
 
 [profile.release]
 codegen-units = 1 # Compile crates one after another so the compiler can optimize better

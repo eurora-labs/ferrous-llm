@@ -1,5 +1,17 @@
 #[allow(ambiguous_glob_reexports)]
-pub use llm_core::*;
+pub use ferrous_llm_core::*;
 
 #[cfg(feature = "openai")]
-pub use llm_openai::*;
+pub mod openai {
+    pub use ferrous_llm_openai::*;
+}
+
+#[cfg(feature = "ollama")]
+pub mod ollama {
+    pub use ferrous_llm_ollama::*;
+}
+
+#[cfg(feature = "anthropic")]
+pub mod anthropic {
+    pub use ferrous_llm_anthropic::*;
+}

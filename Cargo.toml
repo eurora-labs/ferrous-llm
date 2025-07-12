@@ -34,23 +34,23 @@ openai = ["llm-openai"]
 ollama = ["llm-ollama"]
 anthropic = ["llm-anthropic"]
 
-# Add workspace-level package for e2e tests
-[package]
-name = "llm-workspace"
-version.workspace = true
-edition.workspace = true
+# # Add workspace-level package for e2e tests
+# [package]
+# name = "llm-workspace"
+# version.workspace = true
+# edition.workspace = true
 
-[dependencies]
-llm-core = { workspace = true }
-llm-openai = { workspace = true, optional = true }
-llm-ollama = { workspace = true, optional = true }
-llm-anthropic = { workspace = true, optional = true }
-dotenv.workspace = true
-tokio.workspace = true
-futures.workspace = true
-serde_json.workspace = true
-chrono.workspace = true
-thiserror.workspace = true
+# [dependencies]
+# llm-core = { workspace = true }
+# llm-openai = { workspace = true, optional = true }
+# llm-ollama = { workspace = true, optional = true }
+# llm-anthropic = { workspace = true, optional = true }
+# dotenv.workspace = true
+# tokio.workspace = true
+# futures.workspace = true
+# serde_json.workspace = true
+# chrono.workspace = true
+# thiserror.workspace = true
 
 
 [profile.release]

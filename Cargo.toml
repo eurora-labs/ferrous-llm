@@ -1,7 +1,8 @@
 
 [workspace]
 members = [
-    "crates/ferrous-llm-*",
+    "./crates/ferrous-llm-*",
+    "examples",
 ]
 resolver = "2"
 
@@ -21,13 +22,14 @@ dotenv = "0.15"
 futures = "0.3"
 thiserror = "2.0.12"
 
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0"}
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0" }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0" }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.1.0"}
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.1.0" }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.1.0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.1.0" }
 
 [features]
 default = []
+full = ["openai", "ollama", "anthropic"]
 openai = ["ferrous-llm-openai"]
 ollama = ["ferrous-llm-ollama"]
 anthropic = ["ferrous-llm-anthropic"]
@@ -42,16 +44,21 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0", optional = true }
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0", optional = true }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0", optional = true }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.1.0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.1.0", optional = true }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.1.0", optional = true }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.1.0", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true
 serde_json.workspace = true
 chrono.workspace = true
 thiserror.workspace = true
+
+[dev-dependencies]
+dotenv = "0.15"
+tracing-subscriber = "0.3.19"
+tracing = "0.1"
 
 
 [profile.release]

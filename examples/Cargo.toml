@@ -1,0 +1,21 @@
+[package]
+name = "ferrous-llm-examples"
+version = "0.0.0"
+edition = "2024"
+
+[[example]]
+name = "openai_chat"
+path = "openai_chat.rs"
+
+[[example]]
+name = "openai_chat_streaming"
+path = "openai_chat_streaming.rs"
+
+[dependencies]
+ferrous-llm = { path = "..", features = ["openai"] }
+tokio = { version = "1.0", features = ["full"] }
+tracing-subscriber = "0.3"
+futures = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+dotenv = "0.15"
+tracing = "0.1"

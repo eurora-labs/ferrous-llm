@@ -4,6 +4,7 @@ version.workspace = true
 description = "Anthropic provider for the LLM library"
 authors.workspace = true
 edition.workspace = true
+license.workspace = true
 
 [dependencies]
 ferrous-llm-core.workspace = true

@@ -21,11 +21,10 @@ dotenv = "0.15"
 futures = "0.3"
 thiserror = "2.0.12"
 
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "*"}
-# ferrous-llm-memory = { path = "./crates/ferrous-llm-memory", version = "*" }
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "*" }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "*" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "*" }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0"}
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0" }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0" }
 
 [features]
 default = []
@@ -40,10 +39,10 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.1.0" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.1.0", optional = true }
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.1.0", optional = true }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.1.0", optional = true }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0", optional = true }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0", optional = true }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

@@ -264,19 +264,19 @@ pub struct TextToSpeechRequest {
 /// Trait for chat response types.
 pub trait ChatResponse: Send + Sync {
     /// Get the text content of the response
-    fn content(&self) -> &str;
+    fn content(&self) -> String;
 
     /// Get usage statistics if available
-    fn usage(&self) -> Option<&Usage>;
+    fn usage(&self) -> Option<Usage>;
 
     /// Get the reason why generation finished
     fn finish_reason(&self) -> Option<FinishReason>;
 
     /// Get response metadata
-    fn metadata(&self) -> &Metadata;
+    fn metadata(&self) -> Metadata;
 
     /// Get tool calls if any were made
-    fn tool_calls(&self) -> Option<&[ToolCall]> {
+    fn tool_calls(&self) -> Option<Vec<ToolCall>> {
         None
     }
 
@@ -284,9 +284,9 @@ pub trait ChatResponse: Send + Sync {
     fn as_message(&self) -> Message {
         Message {
             role: Role::Assistant,
-            content: MessageContent::Text(self.content().to_string()),
+            content: MessageContent::Text(self.content()),
             name: None,
-            tool_calls: self.tool_calls().map(|calls| calls.to_vec()),
+            tool_calls: self.tool_calls(),
             tool_call_id: None,
             created_at: Utc::now(),
         }
@@ -296,25 +296,25 @@ pub trait ChatResponse: Send + Sync {
 /// Trait for completion response types.
 pub trait CompletionResponse: Send + Sync {
     /// Get the completion text
-    fn text(&self) -> &str;
+    fn text(&self) -> String;
 
     /// Get usage statistics if available
-    fn usage(&self) -> Option<&Usage>;
+    fn usage(&self) -> Option<Usage>;
 
     /// Get the reason why generation finished
     fn finish_reason(&self) -> Option<FinishReason>;
 
     /// Get response metadata
-    fn metadata(&self) -> &Metadata;
+    fn metadata(&self) -> Metadata;
 }
 
 /// Trait for image generation response types.
 pub trait ImageResponse: Send + Sync {
     /// Get the generated images
-    fn images(&self) -> &[GeneratedImage];
+    fn images(&self) -> Vec<GeneratedImage>;
 
     /// Get response metadata
-    fn metadata(&self) -> &Metadata;
+    fn metadata(&self) -> Metadata;
 }
 
 /// A generated image.
@@ -331,25 +331,25 @@ pub struct GeneratedImage {
 /// Trait for speech-to-text response types.
 pub trait SpeechToTextResponse: Send + Sync {
     /// Get the transcribed text
-    fn text(&self) -> &str;
+    fn text(&self) -> String;
 
     /// Get the detected language if available
-    fn language(&self) -> Option<&str>;
+    fn language(&self) -> Option<String>;
 
     /// Get response metadata
-    fn metadata(&self) -> &Metadata;
+    fn metadata(&self) -> Metadata;
 }
 
 /// Trait for text-to-speech response types.
 pub trait TextToSpeechResponse: Send + Sync {
     /// Get the audio data
-    fn audio_data(&self) -> &[u8];
+    fn audio_data(&self) -> Vec<u8>;
 
     /// Get the audio format
-    fn format(&self) -> &str;
+    fn format(&self) -> String;
 
     /// Get response metadata
-    fn metadata(&self) -> &Metadata;
+    fn metadata(&self) -> Metadata;
 }
 
 // Convenience constructors

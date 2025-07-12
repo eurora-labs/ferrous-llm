@@ -28,14 +28,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Load configuration from environment variables
     // Requires OPENAI_API_KEY to be set
     let config = OpenAIConfig::from_env()
-        .map_err(|e| format!("Failed to load config from environment: {}", e))?;
+        .map_err(|e| format!("Failed to load config from environment: {e}"))?;
 
     info!("✅ Configuration loaded successfully");
     info!("📝 Model: {}", config.model);
 
     // Create the OpenAI provider
     let provider = OpenAIProvider::new(config)
-        .map_err(|e| format!("Failed to create OpenAI provider: {}", e))?;
+        .map_err(|e| format!("Failed to create OpenAI provider: {e}"))?;
 
     info!("🔗 Provider created successfully");
 
@@ -87,7 +87,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let response = provider
         .chat(request)
         .await
-        .map_err(|e| format!("Chat request failed: {}", e))?;
+        .map_err(|e| format!("Chat request failed: {e}"))?;
 
     info!("📥 Response received!");
 

@@ -29,14 +29,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Load configuration from environment variables
     // Requires OPENAI_API_KEY to be set
     let config = OpenAIConfig::from_env()
-        .map_err(|e| format!("Failed to load config from environment: {}", e))?;
+        .map_err(|e| format!("Failed to load config from environment: {e}"))?;
 
     info!("✅ Configuration loaded successfully");
     info!("📝 Model: {}", config.model);
 
     // Create the OpenAI provider
     let provider = OpenAIProvider::new(config)
-        .map_err(|e| format!("Failed to create OpenAI provider: {}", e))?;
+        .map_err(|e| format!("Failed to create OpenAI provider: {e}"))?;
 
     info!("🔗 Provider created successfully");
 
@@ -87,7 +87,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut stream = provider
         .chat_stream(request)
         .await
-        .map_err(|e| format!("Streaming chat request failed: {}", e))?;
+        .map_err(|e| format!("Streaming chat request failed: {e}"))?;
 
     info!("🤖 Assistant Response (streaming):");
     info!("─────────────────────────────────");
@@ -100,7 +100,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         match chunk_result {
             Ok(chunk) => {
                 // Print the chunk immediately (streaming effect)
-                print!("{}", chunk);
+                info!(chunk);
                 io::stdout().flush().unwrap(); // Ensure immediate output
 
                 // Accumulate the full response
@@ -108,7 +108,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 token_count += 1;
             }
             Err(e) => {
-                error!("\n❌ Error in stream: {}", e);
+                error!("\n❌ Error in stream: {e}");
                 break;
             }
         }

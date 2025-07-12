@@ -42,15 +42,16 @@ edition.workspace = true
 
 [dependencies]
 llm-core = { workspace = true }
-llm-openai = { workspace = true, optional = true }
-llm-ollama = { workspace = true, optional = true }
-llm-anthropic = { workspace = true, optional = true }
+llm-openai = { workspace = true }
+llm-ollama = { workspace = true }
+llm-anthropic = { workspace = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true
 serde_json.workspace = true
 chrono.workspace = true
 thiserror.workspace = true
+
 
 [profile.release]
 codegen-units = 1 # Compile crates one after another so the compiler can optimize better

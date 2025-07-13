@@ -202,8 +202,6 @@ dependencies = [
  "serde_json",
  "thiserror",
  "tokio",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]
@@ -212,7 +210,6 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "chrono",
- "dotenv",
  "ferrous-llm-core",
  "futures",
  "reqwest",
@@ -221,7 +218,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "tokio-stream",
- "tracing-subscriber",
  "url",
 ]
 
@@ -241,8 +237,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "ferrous-llm-memory"
-version = "0.2.0"
+name = "ferrous-llm-examples"
+version = "0.0.0"
+dependencies = [
+ "chrono",
+ "dotenv",
+ "ferrous-llm",
+ "futures",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "ferrous-llm-ollama"
@@ -250,7 +255,6 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "chrono",
- "dotenv",
  "ferrous-llm-core",
  "futures",
  "reqwest",
@@ -259,7 +263,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "tokio-stream",
- "tracing-subscriber",
  "url",
 ]
 
@@ -269,7 +272,6 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "chrono",
- "dotenv",
  "ferrous-llm-core",
  "futures",
  "reqwest",
@@ -278,7 +280,6 @@ dependencies = [
  "thiserror",
  "tokio",
  "tokio-stream",
- "tracing-subscriber",
  "url",
 ]
 

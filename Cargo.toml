@@ -2,8 +2,9 @@
 [workspace]
 members = [
     "./crates/ferrous-llm-*",
-    "examples",
+    # "examples",
 ]
+exclude = ["examples"]
 resolver = "2"
 
 [workspace.package]

@@ -11,8 +11,16 @@ path = "openai_chat.rs"
 name = "openai_chat_streaming"
 path = "openai_chat_streaming.rs"
 
+[[example]]
+name = "ollama_chat"
+path = "ollama_chat.rs"
+
+[[example]]
+name = "ollama_chat_streaming"
+path = "ollama_chat_streaming.rs"
+
 [dependencies]
-ferrous-llm = { path = "..", features = ["openai"] }
+ferrous-llm = { path = "..", features = ["openai", "ollama"] }
 tokio = { workspace = true, features = ["full"] }
 tracing-subscriber = "0.3"
 futures = "0.3"

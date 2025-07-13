@@ -241,6 +241,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "ferrous-llm-examples"
+version = "0.0.0"
+dependencies = [
+ "chrono",
+ "dotenv",
+ "ferrous-llm",
+ "futures",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "ferrous-llm-memory"
 version = "0.2.0"
 

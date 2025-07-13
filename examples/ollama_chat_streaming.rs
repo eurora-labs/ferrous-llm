@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .model("llama3.2")
         .keep_alive(300) // Keep model loaded for 5 minutes
         .build();
-
+    //
     info!("✅ Configuration created successfully");
     info!("📝 Model: {}", config.model);
     info!("🌐 Base URL: {}", config.base_url());
@@ -105,7 +105,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         match chunk_result {
             Ok(chunk) => {
                 // Print the chunk immediately (streaming effect)
-                print!("{}", chunk);
+                print!("{chunk}");
                 io::stdout().flush().unwrap(); // Ensure immediate output
 
                 // Accumulate the full response

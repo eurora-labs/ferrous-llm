@@ -102,7 +102,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         match chunk_result {
             Ok(chunk) => {
                 // Print the chunk immediately (streaming effect)
-                print!("{}", chunk);
+                print!("{chunk}");
                 io::stdout().flush().unwrap(); // Ensure immediate output
 
                 // Accumulate the full response

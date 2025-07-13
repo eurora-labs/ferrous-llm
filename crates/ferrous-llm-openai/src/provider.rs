@@ -13,6 +13,7 @@ use std::pin::Pin;
 use tokio_stream::{StreamExt, wrappers::ReceiverStream};
 
 /// OpenAI provider implementation.
+#[derive(Debug, Clone)]
 pub struct OpenAIProvider {
     config: OpenAIConfig,
     client: Client,

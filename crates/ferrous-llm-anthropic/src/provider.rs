@@ -11,6 +11,7 @@ use std::pin::Pin;
 use tokio_stream::{StreamExt, wrappers::ReceiverStream};
 
 /// Anthropic provider implementation.
+#[derive(Debug, Clone)]
 pub struct AnthropicProvider {
     config: AnthropicConfig,
     client: Client,

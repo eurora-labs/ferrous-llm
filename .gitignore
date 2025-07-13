@@ -26,3 +26,8 @@ target
 !memory-bank/*.md
 
 .env
+
+# Context Portal specific
+/context_portal/
+*.sqlite
+*.sqlite-journal

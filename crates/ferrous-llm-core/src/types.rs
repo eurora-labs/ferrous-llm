@@ -69,14 +69,6 @@ pub struct Message {
     pub role: Role,
     /// The content of the message
     pub content: MessageContent,
-    /// Optional name of the message sender
-    pub name: Option<String>,
-    /// Optional tool calls in this message
-    pub tool_calls: Option<Vec<ToolCall>>,
-    /// Optional tool call ID if this is a tool response
-    pub tool_call_id: Option<String>,
-    /// Timestamp when the message was created
-    pub created_at: DateTime<Utc>,
 }
 
 /// The role of a message sender.
@@ -101,6 +93,49 @@ pub enum MessageContent {
     Text(String),
     /// Multimodal content with text and other media
     Multimodal(Vec<ContentPart>),
+    /// Tool-related content (calls and responses)
+    Tool(ToolContent),
+}
+
+/// Tool-related message content.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ToolContent {
+    /// Tool calls made by the assistant
+    pub tool_calls: Option<Vec<ToolCall>>,
+    /// Tool call ID if this is a tool response
+    pub tool_call_id: Option<String>,
+    /// Optional text content alongside tool data
+    pub text: Option<String>,
+}
+
+impl MessageContent {
+    /// Create text content
+    pub fn text(content: impl Into<String>) -> Self {
+        Self::Text(content.into())
+    }
+
+    /// Create multimodal content
+    pub fn multimodal(parts: Vec<ContentPart>) -> Self {
+        Self::Multimodal(parts)
+    }
+
+    /// Create tool content with tool calls
+    pub fn tool_calls(tool_calls: Vec<ToolCall>) -> Self {
+        Self::Tool(ToolContent {
+            tool_calls: Some(tool_calls),
+            tool_call_id: None,
+            text: None,
+        })
+    }
+
+    /// Create tool response content
+    pub fn tool_response(content: impl Into<String>, tool_call_id: impl Into<String>) -> Self {
+        Self::Tool(ToolContent {
+            tool_calls: None,
+            tool_call_id: Some(tool_call_id.into()),
+            text: Some(content.into()),
+        })
+    }
 }
 
 /// A part of multimodal message content.
@@ -123,6 +158,43 @@ pub enum ContentPart {
         /// Audio format (mp3, wav, etc.)
         format: Option<String>,
     },
+}
+impl ContentPart {
+    /// Create text content part
+    pub fn text(text: impl Into<String>) -> Self {
+        Self::Text { text: text.into() }
+    }
+
+    /// Create image content part
+    pub fn image(url: impl Into<String>) -> Self {
+        Self::Image {
+            image_url: ImageUrl {
+                url: url.into(),
+                detail: None,
+            },
+            detail: None,
+        }
+    }
+
+    /// Create image content part with detail level
+    pub fn image_with_detail(url: impl Into<String>, detail: impl Into<String>) -> Self {
+        let detail_str = detail.into();
+        Self::Image {
+            image_url: ImageUrl {
+                url: url.into(),
+                detail: Some(detail_str.clone()),
+            },
+            detail: Some(detail_str),
+        }
+    }
+
+    /// Create audio content part
+    pub fn audio(url: impl Into<String>, format: Option<String>) -> Self {
+        Self::Audio {
+            audio_url: url.into(),
+            format,
+        }
+    }
 }
 
 /// Image URL or data for multimodal content.
@@ -282,13 +354,23 @@ pub trait ChatResponse: Send + Sync {
 
     /// Convert response to a Message for conversation history
     fn as_message(&self) -> Message {
+        let content = if let Some(tool_calls) = self.tool_calls() {
+            MessageContent::Tool(ToolContent {
+                tool_calls: Some(tool_calls),
+                tool_call_id: None,
+                text: if self.content().is_empty() {
+                    None
+                } else {
+                    Some(self.content())
+                },
+            })
+        } else {
+            MessageContent::Text(self.content())
+        };
+
         Message {
             role: Role::Assistant,
-            content: MessageContent::Text(self.content()),
-            name: None,
-            tool_calls: self.tool_calls(),
-            tool_call_id: None,
-            created_at: Utc::now(),
+            content,
         }
     }
 }
@@ -359,10 +441,6 @@ impl Message {
         Self {
             role: Role::User,
             content: MessageContent::Text(content.into()),
-            name: None,
-            tool_calls: None,
-            tool_call_id: None,
-            created_at: Utc::now(),
         }
     }
 
@@ -371,10 +449,6 @@ impl Message {
         Self {
             role: Role::Assistant,
             content: MessageContent::Text(content.into()),
-            name: None,
-            tool_calls: None,
-            tool_call_id: None,
-            created_at: Utc::now(),
         }
     }
 
@@ -383,10 +457,51 @@ impl Message {
         Self {
             role: Role::System,
             content: MessageContent::Text(content.into()),
-            name: None,
-            tool_calls: None,
-            tool_call_id: None,
-            created_at: Utc::now(),
+        }
+    }
+
+    /// Create a tool response message
+    pub fn tool_response(content: impl Into<String>, tool_call_id: impl Into<String>) -> Self {
+        Self {
+            role: Role::Tool,
+            content: MessageContent::Tool(ToolContent {
+                tool_calls: None,
+                tool_call_id: Some(tool_call_id.into()),
+                text: Some(content.into()),
+            }),
+        }
+    }
+
+    /// Create an assistant message with tool calls
+    pub fn assistant_with_tools(content: impl Into<String>, tool_calls: Vec<ToolCall>) -> Self {
+        let content_str = content.into();
+        Self {
+            role: Role::Assistant,
+            content: MessageContent::Tool(ToolContent {
+                tool_calls: Some(tool_calls),
+                tool_call_id: None,
+                text: if content_str.is_empty() {
+                    None
+                } else {
+                    Some(content_str)
+                },
+            }),
+        }
+    }
+
+    /// Create a user message with multimodal content
+    pub fn user_multimodal(content: Vec<ContentPart>) -> Self {
+        Self {
+            role: Role::User,
+            content: MessageContent::Multimodal(content),
+        }
+    }
+
+    /// Create an assistant message with multimodal content
+    pub fn assistant_multimodal(content: Vec<ContentPart>) -> Self {
+        Self {
+            role: Role::Assistant,
+            content: MessageContent::Multimodal(content),
         }
     }
 }
@@ -473,6 +588,57 @@ impl ChatRequestBuilder {
 
     pub fn extension(mut self, key: String, value: Value) -> Self {
         self.metadata.extensions.insert(key, value);
+        self
+    }
+    /// Add a user message with text content
+    pub fn user_message(mut self, content: impl Into<String>) -> Self {
+        self.messages.push(Message::user(content));
+        self
+    }
+
+    /// Add an assistant message with text content
+    pub fn assistant_message(mut self, content: impl Into<String>) -> Self {
+        self.messages.push(Message::assistant(content));
+        self
+    }
+
+    /// Add a system message with text content
+    pub fn system_message(mut self, content: impl Into<String>) -> Self {
+        self.messages.push(Message::system(content));
+        self
+    }
+
+    /// Add a tool response message
+    pub fn tool_response(
+        mut self,
+        content: impl Into<String>,
+        tool_call_id: impl Into<String>,
+    ) -> Self {
+        self.messages
+            .push(Message::tool_response(content, tool_call_id));
+        self
+    }
+
+    /// Add an assistant message with tool calls
+    pub fn assistant_with_tools(
+        mut self,
+        content: impl Into<String>,
+        tool_calls: Vec<ToolCall>,
+    ) -> Self {
+        self.messages
+            .push(Message::assistant_with_tools(content, tool_calls));
+        self
+    }
+
+    /// Add a user message with multimodal content
+    pub fn user_multimodal(mut self, content: Vec<ContentPart>) -> Self {
+        self.messages.push(Message::user_multimodal(content));
+        self
+    }
+
+    /// Add an assistant message with multimodal content
+    pub fn assistant_multimodal(mut self, content: Vec<ContentPart>) -> Self {
+        self.messages.push(Message::assistant_multimodal(content));
         self
     }
 

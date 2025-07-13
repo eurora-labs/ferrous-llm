@@ -386,6 +386,11 @@ impl From<&ferrous_llm_core::Message> for AnthropicMessage {
                     .collect();
                 AnthropicContent::Blocks(blocks)
             }
+            ferrous_llm_core::MessageContent::Tool(tool_content) => {
+                // Handle tool content - use text if available, otherwise create a placeholder
+                let text = tool_content.text.as_deref().unwrap_or("[Tool response]");
+                AnthropicContent::Text(text.to_string())
+            }
         };
 
         Self { role, content }

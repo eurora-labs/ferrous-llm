@@ -218,14 +218,7 @@ fn test_openai_multimodal_message_conversion() {
         },
     ];
 
-    let core_message = Message {
-        role: Role::User,
-        content: MessageContent::Multimodal(multimodal_content),
-        name: None,
-        tool_calls: None,
-        tool_call_id: None,
-        created_at: chrono::Utc::now(),
-    };
+    let core_message = Message::user_multimodal(multimodal_content);
 
     let openai_message: OpenAIMessage = (&core_message).into();
     assert_eq!(openai_message.role, "user");

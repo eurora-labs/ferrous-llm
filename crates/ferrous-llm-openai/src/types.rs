@@ -538,28 +538,40 @@ impl From<&ferrous_llm_core::Message> for OpenAIMessage {
                     .collect();
                 Some(serde_json::Value::Array(content_array))
             }
+            ferrous_llm_core::MessageContent::Tool(tool_content) => {
+                // Handle tool content - use text if available, otherwise create a placeholder
+                let text = tool_content.text.as_deref().unwrap_or("[Tool response]");
+                Some(serde_json::Value::String(text.to_string()))
+            }
         };
 
-        let tool_calls = message.tool_calls.as_ref().map(|calls| {
-            calls
-                .iter()
-                .map(|call| OpenAIToolCall {
-                    id: call.id.clone(),
-                    call_type: call.call_type.clone(),
-                    function: OpenAIFunctionCall {
-                        name: call.function.name.clone(),
-                        arguments: call.function.arguments.clone(),
-                    },
-                })
-                .collect()
-        });
+        // Extract tool information from MessageContent::Tool if present
+        let (tool_calls, tool_call_id) = match &message.content {
+            ferrous_llm_core::MessageContent::Tool(tool_content) => {
+                let tool_calls = tool_content.tool_calls.as_ref().map(|calls| {
+                    calls
+                        .iter()
+                        .map(|call| OpenAIToolCall {
+                            id: call.id.clone(),
+                            call_type: call.call_type.clone(),
+                            function: OpenAIFunctionCall {
+                                name: call.function.name.clone(),
+                                arguments: call.function.arguments.clone(),
+                            },
+                        })
+                        .collect()
+                });
+                (tool_calls, tool_content.tool_call_id.clone())
+            }
+            _ => (None, None),
+        };
 
         Self {
             role,
             content,
-            name: message.name.clone(),
+            name: None, // Name field removed from core Message
             tool_calls,
-            tool_call_id: message.tool_call_id.clone(),
+            tool_call_id,
         }
     }
 }

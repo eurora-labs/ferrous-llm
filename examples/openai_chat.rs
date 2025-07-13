@@ -10,7 +10,7 @@
 //! ```
 
 use ferrous_llm::{
-    ChatProvider, ChatRequest, ChatResponse, Message, MessageContent, Metadata, Parameters, Role,
+    ChatProvider, ChatRequest, ChatResponse,
     openai::{OpenAIConfig, OpenAIProvider},
 };
 use std::error::Error;
@@ -39,47 +39,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     info!("🔗 Provider created successfully");
 
-    // Create a simple chat request
-    let request = ChatRequest {
-        messages: vec![
-            Message {
-                role: Role::System,
-                content: MessageContent::Text(
-                    "You are a helpful assistant that provides concise and informative responses."
-                        .to_string(),
-                ),
-                name: None,
-                tool_calls: None,
-                tool_call_id: None,
-                created_at: chrono::Utc::now(),
-            },
-            Message {
-                role: Role::User,
-                content: MessageContent::Text(
-                    "Hello! Can you explain what Rust is in one paragraph?".to_string(),
-                ),
-                name: None,
-                tool_calls: None,
-                tool_call_id: None,
-                created_at: chrono::Utc::now(),
-            },
-        ],
-        parameters: Parameters {
-            temperature: Some(0.7),
-            max_tokens: Some(150),
-            top_p: Some(1.0),
-            top_k: None,
-            stop_sequences: vec![],
-            frequency_penalty: None,
-            presence_penalty: None,
-        },
-        metadata: Metadata {
-            extensions: std::collections::HashMap::new(),
-            request_id: Some("example-chat-001".to_string()),
-            user_id: Some("example-user".to_string()),
-            created_at: chrono::Utc::now(),
-        },
-    };
+    // Create a simple chat request using the improved API
+    let request = ChatRequest::builder()
+        .system_message(
+            "You are a helpful assistant that provides concise and informative responses.",
+        )
+        .user_message("Hello! Can you explain what Rust is in one paragraph?")
+        .temperature(0.7)
+        .max_tokens(150)
+        .top_p(1.0)
+        .request_id("example-chat-001".to_string())
+        .user_id("example-user".to_string())
+        .build();
 
     info!("📤 Sending chat request...");
 

@@ -84,14 +84,7 @@ fn test_multimodal_content() {
         },
     ];
 
-    let message = Message {
-        role: Role::User,
-        content: MessageContent::Multimodal(parts),
-        name: None,
-        tool_calls: None,
-        tool_call_id: None,
-        created_at: chrono::Utc::now(),
-    };
+    let message = Message::user_multimodal(parts);
 
     match &message.content {
         MessageContent::Multimodal(parts) => {

@@ -447,6 +447,14 @@ impl From<&ferrous_llm_core::Message> for OllamaMessage {
                     .collect();
                 text_parts.join("\n")
             }
+            ferrous_llm_core::MessageContent::Tool(tool_content) => {
+                // Handle tool content - use text if available, otherwise create a placeholder
+                tool_content
+                    .text
+                    .as_deref()
+                    .unwrap_or("[Tool response]")
+                    .to_string()
+            }
         };
 
         // Extract images from multimodal content

@@ -24,5 +24,11 @@ target
 *.md
 !README.md
 !memory-bank/*.md
+!.roo/*/*.md
 
 .env
+
+
+/context_portal/
+*.sqlite
+*.sqlite-journal

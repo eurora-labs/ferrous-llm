@@ -13,7 +13,7 @@ use std::pin::Pin;
 use tokio_stream::{StreamExt, wrappers::ReceiverStream};
 
 /// Ollama provider implementation.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct OllamaProvider {
     config: OllamaConfig,
     client: Client,

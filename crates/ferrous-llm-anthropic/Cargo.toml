@@ -1,6 +1,6 @@
 [package]
 name = "ferrous-llm-anthropic"
-version.workspace = true
+version = "0.2.0"
 description = "Anthropic provider for the LLM library"
 authors.workspace = true
 edition.workspace = true

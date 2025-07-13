@@ -4,15 +4,31 @@ version = "0.0.0"
 edition = "2024"
 
 [[example]]
-name = "openai_chat"
+name = "demo_openai_chat"
 path = "openai_chat.rs"
 
 [[example]]
-name = "openai_chat_streaming"
+name = "demo_openai_chat_streaming"
 path = "openai_chat_streaming.rs"
 
+[[example]]
+name = "demo_ollama_chat"
+path = "ollama_chat.rs"
+
+[[example]]
+name = "demo_ollama_chat_streaming"
+path = "ollama_chat_streaming.rs"
+
+[[example]]
+name = "demo_anthropic_chat"
+path = "anthropic_chat.rs"
+
+[[example]]
+name = "demo_anthropic_chat_streaming"
+path = "anthropic_chat_streaming.rs"
+
 [dependencies]
-ferrous-llm = { path = "..", features = ["openai"] }
+ferrous-llm = { path = "..", features = ["openai", "ollama", "anthropic"] }
 tokio = { workspace = true, features = ["full"] }
 tracing-subscriber = "0.3"
 futures = "0.3"

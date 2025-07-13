@@ -24,7 +24,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ferrous-llm-core = "0.1.0"
+ferrous-llm-core = "0.2.0"
 ```
 
 ## Core Traits

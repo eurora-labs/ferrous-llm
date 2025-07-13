@@ -1,6 +1,6 @@
 [package]
 name = "ferrous-llm-openai"
-version.workspace = true
+version = "0.2.0"
 description = "OpenAI provider for the LLM library"
 authors.workspace = true
 edition.workspace = true

@@ -24,14 +24,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ferrous-llm-ollama = "0.1.0"
+ferrous-llm-ollama = "0.2.0"
 ```
 
 Or use the main ferrous-llm crate with the Ollama feature:
 
 ```toml
 [dependencies]
-ferrous-llm = { version = "0.1.0", features = ["ollama"] }
+ferrous-llm = { version = "0.2.0", features = ["ollama"] }
 ```
 
 ## Prerequisites

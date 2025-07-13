@@ -22,14 +22,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ferrous-llm-openai = "0.1.0"
+ferrous-llm-openai = "0.2.0"
 ```
 
 Or use the main ferrous-llm crate with the OpenAI feature:
 
 ```toml
 [dependencies]
-ferrous-llm = { version = "0.1.0", features = ["openai"] }
+ferrous-llm = { version = "0.2.0", features = ["openai"] }
 ```
 
 ## Quick Start

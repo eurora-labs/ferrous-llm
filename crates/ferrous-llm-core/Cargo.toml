@@ -1,6 +1,6 @@
 [package]
 name = "ferrous-llm-core"
-version.workspace = true
+version = "0.2.0"
 description = "Core LLM library"
 authors.workspace = true
 edition.workspace = true

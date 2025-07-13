@@ -10,7 +10,7 @@
 //! ```
 
 use ferrous_llm::{
-    ChatRequest, Message, MessageContent, Metadata, Parameters, Role, StreamingProvider,
+    ChatRequest, StreamingProvider,
     anthropic::{AnthropicConfig, AnthropicProvider},
 };
 use futures::StreamExt;

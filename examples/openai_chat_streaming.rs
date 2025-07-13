@@ -9,7 +9,7 @@
 //! cargo run --example openai_chat_streaming
 //! ```
 use ferrous_llm::{
-    ChatRequest, Message, MessageContent, Metadata, Parameters, Role, StreamingProvider,
+    ChatRequest, StreamingProvider,
     openai::{OpenAIConfig, OpenAIProvider},
 };
 use futures::StreamExt;
@@ -40,46 +40,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     info!("🔗 Provider created successfully");
 
-    // Create a chat request that will generate a longer response
-    let request = ChatRequest {
-        messages: vec![
-            Message {
-                role: Role::System,
-                content: MessageContent::Text(
-                    "You are a creative storyteller. Write engaging and descriptive stories.".to_string()
-                ),
-                name: None,
-                tool_calls: None,
-                tool_call_id: None,
-                created_at: chrono::Utc::now(),
-            },
-            Message {
-                role: Role::User,
-                content: MessageContent::Text(
-                    "Tell me a short story about a robot who discovers they can dream. Make it about 200 words.".to_string()
-                ),
-                name: None,
-                tool_calls: None,
-                tool_call_id: None,
-                created_at: chrono::Utc::now(),
-            },
-        ],
-        parameters: Parameters {
-            temperature: Some(0.8),
-            max_tokens: Some(300),
-            top_p: Some(1.0),
-            top_k: None,
-            stop_sequences: vec![],
-            frequency_penalty: None,
-            presence_penalty: None,
-        },
-        metadata: Metadata {
-            extensions: std::collections::HashMap::new(),
-            request_id: Some("example-streaming-001".to_string()),
-            user_id: Some("example-user".to_string()),
-            created_at: chrono::Utc::now(),
-        },
-    };
+    // Create a chat request that will generate a longer response using the improved API
+    let request = ChatRequest::builder()
+        .system_message("You are a creative storyteller. Write engaging and descriptive stories.")
+        .user_message("Tell me a short story about a robot who discovers they can dream. Make it about 200 words.")
+        .temperature(0.8)
+        .max_tokens(300)
+        .top_p(1.0)
+        .request_id("example-streaming-001".to_string())
+        .user_id("example-user".to_string())
+        .build();
 
     info!("📤 Starting streaming chat request...");
 

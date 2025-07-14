@@ -35,7 +35,7 @@ Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
 ferrous-llm-grpc = "0.1.0"
-ferrous-llm-core = "0.1.0"
+ferrous-llm-core = "0.3.0"
 tokio = { version = "1.0", features = ["full"] }
 ```
 

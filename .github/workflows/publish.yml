@@ -2,7 +2,8 @@ name: Publish
 
 permissions:
     id-token: write
-    contents: read
+    contents: write
+    packages: write
 
 on:
     push:

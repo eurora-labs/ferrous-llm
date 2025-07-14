@@ -1,30 +1,26 @@
+
 [package]
-name = "ferrous-llm-openai"
-version = "0.2.0"
-description = "OpenAI provider for the LLM library"
+name = "ferrous-llm-grpc"
+version = "0.1.0"
+description = "Core gRPC implementation"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [dependencies]
-ferrous-llm-core.workspace = true
+async-stream = "0.3"
 async-trait = "0.1"
 chrono = { workspace = true, features = ["serde"] }
 futures.workspace = true
-reqwest = { version = "0.12", features = ["json", "stream"] }
+prost-types = "0.13.1"
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["full"] }
-tokio-stream = "0.1"
+tonic = { version = "0.13.1", features = ["tls-native-roots", "channel"] }
+prost = "0.13.1"
 url = { workspace = true, features = ["serde"] }
+ferrous-llm-core = { workspace = true, features = ["dynamic-image"] }
 
-[features]
-default = []
-integration-tests = []
-e2e-tests = []
-dynamic-image = ["ferrous-llm-core/dynamic-image"]
-
-[dev-dependencies]
-dotenv = "0.15"
-tracing-subscriber = "0.3.19"
+[build-dependencies]
+tonic-build = "0.13.1"

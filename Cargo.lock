@@ -481,7 +481,7 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "chrono",
  "dotenv",
@@ -567,7 +567,7 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm-memory"
-version = "0.3.0"
+version = "0.3.1"
 
 [[package]]
 name = "ferrous-llm-ollama"

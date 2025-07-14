@@ -173,6 +173,21 @@ impl ContentPart {
         }
     }
 
+    #[cfg(feature = "dynamic-image")]
+    pub fn image_dynamic(image: image::DynamicImage) -> Self {
+        Self::Image {
+            image_source: ImageSource::DynamicImage(image),
+            detail: None,
+        }
+    }
+
+    pub fn image_url(url: impl Into<String>) -> Self {
+        Self::Image {
+            image_source: ImageSource::Url(url.into()),
+            detail: None,
+        }
+    }
+
     /// Create image content part with detail level
     pub fn image_with_detail(url: impl Into<String>, detail: impl Into<String>) -> Self {
         let detail_str = detail.into();

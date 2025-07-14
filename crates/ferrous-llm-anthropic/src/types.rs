@@ -372,7 +372,7 @@ impl From<&ferrous_llm_core::Message> for AnthropicMessage {
                                 // External URL - needs to be downloaded and converted to base64
                                 // For now, return a placeholder
                                 AnthropicContentBlock::Text {
-                                    text: format!("[Image URL not supported: {}]", url),
+                                    text: format!("[Image URL not supported: {url}]"),
                                 }
                             }
                         }

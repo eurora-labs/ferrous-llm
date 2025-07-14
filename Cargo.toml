@@ -21,6 +21,8 @@ chrono = { version = "0.4", features = ["serde"] }
 dotenv = "0.15"
 futures = "0.3"
 thiserror = "2.0.12"
+url = { version = "2.5.4" }
+
 
 ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.2.0"}
 ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.2.0" }

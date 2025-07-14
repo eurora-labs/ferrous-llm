@@ -147,7 +147,7 @@ pub enum ContentPart {
     /// Image content
     Image {
         /// Image data or URL
-        image_url: ImageUrl,
+        image_source: ImageSource,
         /// Optional detail level for image processing
         detail: Option<String>,
     },
@@ -166,12 +166,9 @@ impl ContentPart {
     }
 
     /// Create image content part
-    pub fn image(url: impl Into<String>) -> Self {
+    pub fn image(source: ImageSource) -> Self {
         Self::Image {
-            image_url: ImageUrl {
-                url: url.into(),
-                detail: None,
-            },
+            image_source: source,
             detail: None,
         }
     }
@@ -180,10 +177,7 @@ impl ContentPart {
     pub fn image_with_detail(url: impl Into<String>, detail: impl Into<String>) -> Self {
         let detail_str = detail.into();
         Self::Image {
-            image_url: ImageUrl {
-                url: url.into(),
-                detail: Some(detail_str.clone()),
-            },
+            image_source: ImageSource::Url(url.into()),
             detail: Some(detail_str),
         }
     }
@@ -197,13 +191,44 @@ impl ContentPart {
     }
 }
 
-/// Image URL or data for multimodal content.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ImageUrl {
+pub enum ImageSource {
     /// The URL or base64-encoded image data
-    pub url: String,
-    /// Optional detail level (low, high, auto)
-    pub detail: Option<String>,
+    Url(String),
+
+    #[cfg(feature = "dynamic-image")]
+    #[serde(skip_serializing, skip_deserializing)]
+    /// The image data
+    DynamicImage(image::DynamicImage),
+}
+
+#[cfg(feature = "dynamic-image")]
+impl ImageSource {
+    pub fn dynamic_image(image: image::DynamicImage) -> Self {
+        Self::DynamicImage(image)
+    }
+}
+
+#[cfg(feature = "dynamic-image")]
+impl From<image::DynamicImage> for ImageSource {
+    fn from(image: image::DynamicImage) -> Self {
+        Self::DynamicImage(image)
+    }
+}
+
+impl From<ImageSource> for String {
+    fn from(source: ImageSource) -> Self {
+        match source {
+            ImageSource::Url(url) => url,
+
+            #[cfg(feature = "dynamic-image")]
+            ImageSource::DynamicImage(image) => crate::util::dynamic_image::image_to_base64(&image),
+
+            #[cfg(not(feature = "dynamic-image"))]
+            #[allow(unreachable_patterns)]
+            _ => panic!("DynamicImage feature is not enabled"),
+        }
+    }
 }
 
 /// A tool/function call made by the AI.

@@ -76,10 +76,7 @@ fn test_multimodal_content() {
             text: "Describe this image:".to_string(),
         },
         ContentPart::Image {
-            image_url: ImageUrl {
-                url: "https://example.com/image.jpg".to_string(),
-                detail: Some("high".to_string()),
-            },
+            image_source: ImageSource::Url("https://example.com/image.jpg".to_string()),
             detail: Some("high".to_string()),
         },
     ];
@@ -94,8 +91,9 @@ fn test_multimodal_content() {
                 _ => panic!("Expected text part"),
             }
             match &parts[1] {
-                ContentPart::Image { image_url, .. } => {
-                    assert_eq!(image_url.url, "https://example.com/image.jpg");
+                ContentPart::Image { image_source, .. } => {
+                    let url: String = image_source.clone().into();
+                    assert_eq!(url, "https://example.com/image.jpg");
                 }
                 _ => panic!("Expected image part"),
             }

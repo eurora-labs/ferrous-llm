@@ -8,6 +8,8 @@ pub mod config;
 pub mod error;
 pub mod traits;
 pub mod types;
+#[cfg(feature = "dynamic-image")]
+mod util;
 
 // Re-export core types for convenience
 pub use config::*;

@@ -463,8 +463,9 @@ impl From<&ferrous_llm_core::Message> for OllamaMessage {
                 let image_data: Vec<String> = parts
                     .iter()
                     .filter_map(|part| match part {
-                        ferrous_llm_core::ContentPart::Image { image_url, .. } => {
-                            Some(image_url.url.clone())
+                        ferrous_llm_core::ContentPart::Image { image_source, .. } => {
+                            let url: String = image_source.clone().into();
+                            Some(url)
                         }
                         _ => None,
                     })

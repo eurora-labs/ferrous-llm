@@ -481,7 +481,7 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "dotenv",
@@ -499,7 +499,7 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm-anthropic"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -518,7 +518,7 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm-core"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "base64",
@@ -567,11 +567,11 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm-memory"
-version = "0.2.0"
+version = "0.3.0"
 
 [[package]]
 name = "ferrous-llm-ollama"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -590,7 +590,7 @@ dependencies = [
 
 [[package]]
 name = "ferrous-llm-openai"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "async-trait",
  "chrono",

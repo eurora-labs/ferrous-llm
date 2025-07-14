@@ -200,7 +200,8 @@ match provider.chat(request).await {
 
 ## Building and Protocol Buffers
 
-This crate uses [`tonic-build`](https://docs.rs/tonic-build) to generate Rust code from Protocol Buffer definitions at build time. The generated code is placed in [`src/gen/`](src/gen/) and is automatically included in the library.
+[`tonic-build`](https://docs.rs/tonic-build) writes the generated code to Cargo’s `OUT_DIR`, which is
+automatically included via `tonic::include_proto!("PROTO_PACKAGE")`.
 
 ### Build Requirements
 

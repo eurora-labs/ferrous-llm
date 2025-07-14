@@ -4,7 +4,7 @@
 
 pub mod proto {
     pub mod chat {
-        include!("./gen/ferrous_llm.chat.rs");
+        tonic::include_proto!("ferrous_llm.chat");
     }
 }
 

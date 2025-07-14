@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 description = "LLM library"
 authors = ["Andre Roelofs <andre@eurora-labs.com>"]
 license = "Apache-2.0"
@@ -25,9 +25,9 @@ url = { version = "2.5.4" }
 
 
 ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.3.0"}
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.2.0" }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.2.0" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.2.0" }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.3.0" }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.3.0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.3.0" }
 
 [features]
 default = []

@@ -10,17 +10,14 @@
 //! cargo run --example ollama_chat_streaming
 //! ```
 
-use ferrous_llm::{
-    ChatRequest, StreamingProvider,
-    ollama::{OllamaConfig, OllamaProvider},
-};
-use futures::StreamExt;
-use std::error::Error;
-use std::io::{self, Write};
-use tracing::{error, info};
-
+#[cfg(feature = "ollama")]
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use ferrous_llm::ollama::{OllamaConfig, OllamaProvider};
+    use ferrous_llm::{ChatRequest, StreamingProvider};
+    use futures::StreamExt;
+    use std::io::{self, Write};
+    use tracing::{error, info};
     dotenv::dotenv().ok();
     // Initialize tracing for better error reporting
     tracing_subscriber::fmt::init();
@@ -104,4 +101,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("✅ Streaming example completed successfully!");
 
     Ok(())
+}
+
+#[cfg(not(feature = "ollama"))]
+fn main() {
+    println!("Ollama provider is not enabled. Please enable the 'ollama' feature.");
 }

@@ -9,17 +9,15 @@
 //! cargo run --example anthropic_chat_streaming
 //! ```
 
-use ferrous_llm::{
-    ChatRequest, StreamingProvider,
-    anthropic::{AnthropicConfig, AnthropicProvider},
-};
-use futures::StreamExt;
-use std::error::Error;
-use std::io::{self, Write};
-use tracing::{error, info};
-
+#[cfg(feature = "anthropic")]
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use ferrous_llm::anthropic::{AnthropicConfig, AnthropicProvider};
+    use ferrous_llm::{ChatRequest, StreamingProvider};
+    use futures::StreamExt;
+    use std::io::{self, Write};
+    use tracing::{error, info};
+
     dotenv::dotenv().ok();
     // Initialize tracing for better error reporting
     tracing_subscriber::fmt::init();
@@ -101,4 +99,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("✅ Streaming example completed successfully!");
 
     Ok(())
+}
+
+#[cfg(not(feature = "anthropic"))]
+fn main() {
+    println!("Anthropic provider is not enabled. Please enable the 'anthropic' feature.");
 }

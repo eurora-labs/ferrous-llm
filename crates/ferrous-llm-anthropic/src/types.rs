@@ -341,12 +341,13 @@ impl From<&ferrous_llm_core::Message> for AnthropicMessage {
                         ferrous_llm_core::ContentPart::Text { text } => {
                             AnthropicContentBlock::Text { text: text.clone() }
                         }
-                        ferrous_llm_core::ContentPart::Image { image_url, .. } => {
+                        ferrous_llm_core::ContentPart::Image { image_source, .. } => {
+                            let url: String = image_source.clone().into();
                             // Parse the image URL to determine if it's a data URI or external URL
-                            if image_url.url.starts_with("data:") {
+                            if url.starts_with("data:") {
                                 // Parse data URI to extract media type and base64 data
                                 // Format: data:image/jpeg;base64,<data>
-                                let parts: Vec<&str> = image_url.url.splitn(2, ',').collect();
+                                let parts: Vec<&str> = url.splitn(2, ',').collect();
                                 if parts.len() == 2 {
                                     let header = parts[0];
                                     let data = parts[1];
@@ -371,7 +372,7 @@ impl From<&ferrous_llm_core::Message> for AnthropicMessage {
                                 // External URL - needs to be downloaded and converted to base64
                                 // For now, return a placeholder
                                 AnthropicContentBlock::Text {
-                                    text: format!("[Image URL not supported: {}]", image_url.url),
+                                    text: format!("[Image URL not supported: {url}]"),
                                 }
                             }
                         }

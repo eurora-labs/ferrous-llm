@@ -210,10 +210,9 @@ fn test_openai_multimodal_message_conversion() {
             text: "Describe this image:".to_string(),
         },
         ContentPart::Image {
-            image_url: ImageUrl {
-                url: "https://example.com/image.jpg".to_string(),
-                detail: Some("high".to_string()),
-            },
+            image_source: ferrous_llm_core::ImageSource::Url(
+                "https://example.com/image.jpg".to_string(),
+            ),
             detail: Some("high".to_string()),
         },
     ];

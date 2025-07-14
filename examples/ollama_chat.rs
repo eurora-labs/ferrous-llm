@@ -10,15 +10,12 @@
 //! cargo run --example ollama_chat
 //! ```
 
-use ferrous_llm::{
-    ChatProvider, ChatRequest, ChatResponse,
-    ollama::{OllamaConfig, OllamaProvider},
-};
-use std::error::Error;
-use tracing::info;
-
+#[cfg(feature = "ollama")]
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use ferrous_llm::ollama::{OllamaConfig, OllamaProvider};
+    use ferrous_llm::{ChatProvider, ChatRequest, ChatResponse};
+    use tracing::info;
     dotenv::dotenv().ok();
     // Initialize tracing for better error reporting
     tracing_subscriber::fmt::init();
@@ -93,4 +90,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("✅ Example completed successfully!");
 
     Ok(())
+}
+
+#[cfg(not(feature = "ollama"))]
+fn main() {
+    println!("Ollama provider is not enabled. Please enable the 'ollama' feature.");
 }

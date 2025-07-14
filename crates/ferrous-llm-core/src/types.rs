@@ -147,7 +147,7 @@ pub enum ContentPart {
     /// Image content
     Image {
         /// Image data or URL
-        image_url: ImageUrl,
+        image_source: ImageSource,
         /// Optional detail level for image processing
         detail: Option<String>,
     },
@@ -166,12 +166,24 @@ impl ContentPart {
     }
 
     /// Create image content part
-    pub fn image(url: impl Into<String>) -> Self {
+    pub fn image(source: ImageSource) -> Self {
         Self::Image {
-            image_url: ImageUrl {
-                url: url.into(),
-                detail: None,
-            },
+            image_source: source,
+            detail: None,
+        }
+    }
+
+    #[cfg(feature = "dynamic-image")]
+    pub fn image_dynamic(image: image::DynamicImage) -> Self {
+        Self::Image {
+            image_source: ImageSource::DynamicImage(image),
+            detail: None,
+        }
+    }
+
+    pub fn image_url(url: impl Into<String>) -> Self {
+        Self::Image {
+            image_source: ImageSource::Url(url.into()),
             detail: None,
         }
     }
@@ -180,10 +192,7 @@ impl ContentPart {
     pub fn image_with_detail(url: impl Into<String>, detail: impl Into<String>) -> Self {
         let detail_str = detail.into();
         Self::Image {
-            image_url: ImageUrl {
-                url: url.into(),
-                detail: Some(detail_str.clone()),
-            },
+            image_source: ImageSource::Url(url.into()),
             detail: Some(detail_str),
         }
     }
@@ -197,13 +206,52 @@ impl ContentPart {
     }
 }
 
-/// Image URL or data for multimodal content.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ImageUrl {
+pub enum ImageSource {
     /// The URL or base64-encoded image data
-    pub url: String,
-    /// Optional detail level (low, high, auto)
-    pub detail: Option<String>,
+    Url(String),
+
+    #[cfg(feature = "dynamic-image")]
+    #[serde(skip_serializing, skip_deserializing)]
+    /// The image data
+    DynamicImage(image::DynamicImage),
+}
+
+#[cfg(feature = "dynamic-image")]
+impl ImageSource {
+    pub fn dynamic_image(image: image::DynamicImage) -> Self {
+        Self::DynamicImage(image)
+    }
+}
+
+#[cfg(feature = "dynamic-image")]
+impl From<image::DynamicImage> for ImageSource {
+    fn from(image: image::DynamicImage) -> Self {
+        Self::DynamicImage(image)
+    }
+}
+
+/// Converts an ImageSource to a String representation.
+///
+/// - `Url` variants are returned as-is
+/// - `DynamicImage` variants are converted to base64-encoded PNG data URLs
+///
+/// Note: This conversion is lossy - the original type cannot be determined from the resulting string.
+impl From<ImageSource> for String {
+    fn from(source: ImageSource) -> Self {
+        match source {
+            ImageSource::Url(url) => url,
+
+            #[cfg(feature = "dynamic-image")]
+            ImageSource::DynamicImage(image) => crate::util::dynamic_image::image_to_base64(&image),
+
+            #[cfg(not(feature = "dynamic-image"))]
+            #[allow(unreachable_patterns)]
+            _ => panic!(
+                "ImageSource::DynamicImage variant requires the 'dynamic-image' feature to be enabled"
+            ),
+        }
+    }
 }
 
 /// A tool/function call made by the AI.

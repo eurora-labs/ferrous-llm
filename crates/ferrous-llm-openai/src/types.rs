@@ -508,11 +508,15 @@ impl From<&ferrous_llm_core::Message> for OpenAIMessage {
                             "type": "text",
                             "text": text
                         }),
-                        ferrous_llm_core::ContentPart::Image { image_url, detail } => {
+                        ferrous_llm_core::ContentPart::Image {
+                            image_source,
+                            detail,
+                        } => {
+                            let url: String = image_source.clone().into();
                             serde_json::json!({
                                 "type": "image_url",
                                 "image_url": {
-                                    "url": image_url.url,
+                                    "url": url,
                                     "detail": detail.as_deref().unwrap_or("auto")
                                 }
                             })

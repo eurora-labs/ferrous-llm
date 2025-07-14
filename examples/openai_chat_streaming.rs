@@ -8,17 +8,15 @@
 //! export OPENAI_API_KEY="your-api-key-here"
 //! cargo run --example openai_chat_streaming
 //! ```
-use ferrous_llm::{
-    ChatRequest, StreamingProvider,
-    openai::{OpenAIConfig, OpenAIProvider},
-};
-use futures::StreamExt;
-use std::error::Error;
-use std::io::{self, Write};
-use tracing::{error, info};
 
+#[cfg(feature = "openai")]
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use ferrous_llm::openai::{OpenAIConfig, OpenAIProvider};
+    use ferrous_llm::{ChatRequest, StreamingProvider};
+    use futures::StreamExt;
+    use std::io::{self, Write};
+    use tracing::{error, info};
     dotenv::dotenv().ok();
     // Initialize tracing for better error reporting
     tracing_subscriber::fmt::init();
@@ -70,7 +68,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         match chunk_result {
             Ok(chunk) => {
                 // Print the chunk immediately (streaming effect)
-                info!(chunk);
+                print!("{chunk}");
                 io::stdout().flush().unwrap(); // Ensure immediate output
 
                 // Accumulate the full response
@@ -99,4 +97,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("✅ Streaming example completed successfully!");
 
     Ok(())
+}
+
+#[cfg(not(feature = "openai"))]
+fn main() {
+    println!("OpenAI provider is not enabled. Please enable the 'openai' feature.");
 }

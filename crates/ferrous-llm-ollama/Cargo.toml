@@ -23,6 +23,7 @@ url = { version = "2.0", features = ["serde"] }
 default = []
 integration-tests = []
 e2e-tests = []
+dynamic-image = ["ferrous-llm-core/dynamic-image"]
 
 [dev-dependencies]
 dotenv = "0.15"

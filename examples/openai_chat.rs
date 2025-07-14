@@ -9,15 +9,13 @@
 //! cargo run --example openai_chat
 //! ```
 
-use ferrous_llm::{
-    ChatProvider, ChatRequest, ChatResponse,
-    openai::{OpenAIConfig, OpenAIProvider},
-};
-use std::error::Error;
-use tracing::info;
-
+#[cfg(feature = "openai")]
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use ferrous_llm::openai::{OpenAIConfig, OpenAIProvider};
+    use ferrous_llm::{ChatProvider, ChatRequest, ChatResponse};
+    use tracing::info;
+
     dotenv::dotenv().ok();
     // Initialize tracing for better error reporting
     tracing_subscriber::fmt::init();
@@ -89,4 +87,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("✅ Example completed successfully!");
 
     Ok(())
+}
+
+#[cfg(not(feature = "openai"))]
+fn main() {
+    println!("OpenAI provider is not enabled. Please enable the 'openai' feature.");
 }

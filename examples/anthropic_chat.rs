@@ -9,15 +9,12 @@
 //! cargo run --example anthropic_chat
 //! ```
 
-use ferrous_llm::{
-    ChatProvider, ChatRequest, ChatResponse,
-    anthropic::{AnthropicConfig, AnthropicProvider},
-};
-use std::error::Error;
-use tracing::info;
-
+#[cfg(feature = "anthropic")]
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    use ferrous_llm::anthropic::{AnthropicConfig, AnthropicProvider};
+    use ferrous_llm::{ChatProvider, ChatRequest, ChatResponse};
+    use tracing::info;
     dotenv::dotenv().ok();
     // Initialize tracing for better error reporting
     tracing_subscriber::fmt::init();
@@ -90,4 +87,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("✅ Example completed successfully!");
 
     Ok(())
+}
+
+#[cfg(not(feature = "anthropic"))]
+fn main() {
+    println!("Anthropic provider is not enabled. Please enable the 'anthropic' feature.");
 }

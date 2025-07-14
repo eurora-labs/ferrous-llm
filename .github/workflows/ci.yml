@@ -19,6 +19,8 @@ jobs:
               with:
                   toolchain: stable
                   components: clippy, rustfmt
+            - name: Install Protoc
+              uses: arduino/setup-protoc@v3
             - name: Linux setup
               if: matrix.os == 'ubuntu-latest'
               run: sudo apt-get update &&

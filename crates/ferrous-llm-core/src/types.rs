@@ -231,6 +231,12 @@ impl From<image::DynamicImage> for ImageSource {
     }
 }
 
+/// Converts an ImageSource to a String representation.
+///
+/// - `Url` variants are returned as-is
+/// - `DynamicImage` variants are converted to base64-encoded PNG data URLs
+///
+/// Note: This conversion is lossy - the original type cannot be determined from the resulting string.
 impl From<ImageSource> for String {
     fn from(source: ImageSource) -> Self {
         match source {
@@ -241,7 +247,9 @@ impl From<ImageSource> for String {
 
             #[cfg(not(feature = "dynamic-image"))]
             #[allow(unreachable_patterns)]
-            _ => panic!("DynamicImage feature is not enabled"),
+            _ => panic!(
+                "ImageSource::DynamicImage variant requires the 'dynamic-image' feature to be enabled"
+            ),
         }
     }
 }

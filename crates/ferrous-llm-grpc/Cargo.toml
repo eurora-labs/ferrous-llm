@@ -12,15 +12,15 @@ async-stream = "0.3"
 async-trait = "0.1"
 chrono = { workspace = true, features = ["serde"] }
 futures.workspace = true
-prost-types = "0.13.1"
+prost-types = "0.14.1"
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["full"] }
-tonic = { version = "0.13.1", features = ["tls-native-roots", "channel"] }
-prost = "0.13.1"
+tonic = { version = "0.14.0", features = ["tls-native-roots", "channel"] }
+prost = "0.14.1"
 url = { workspace = true, features = ["serde"] }
 ferrous-llm-core = { workspace = true, features = ["dynamic-image"] }
 
 [build-dependencies]
-tonic-build = "0.13.1"
+tonic-build = "0.14.0"

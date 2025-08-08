@@ -12,10 +12,8 @@
 #[cfg(feature = "openai")]
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    use base64::{Engine as _, engine::general_purpose};
     use ferrous_llm::openai::{OpenAIConfig, OpenAIProvider};
     use ferrous_llm::{ChatProvider, ChatRequest, ChatResponse, ContentPart, ImageSource};
-    use image::DynamicImage;
     use std::path::Path;
     use tracing::info;
 

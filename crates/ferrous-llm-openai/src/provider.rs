@@ -315,18 +315,14 @@ impl StreamingProvider for OpenAIProvider {
                                 }
 
                                 // Try to parse the JSON chunk
-                                if let Ok(chunk) = serde_json::from_str::<OpenAIStreamChunk>(data) {
-                                    // Extract content from the first choice's delta
-                                    if let Some(choice) = chunk.choices.first() {
-                                        if let Some(content) = &choice.delta.content {
-                                            if !content.is_empty()
-                                                && tx_clone.send(Ok(content.clone())).await.is_err()
-                                            {
-                                                // Receiver dropped
-                                                return;
-                                            }
-                                        }
-                                    }
+                                if let Ok(chunk) = serde_json::from_str::<OpenAIStreamChunk>(data)
+                                    && let Some(choice) = chunk.choices.first()
+                                    && let Some(content) = &choice.delta.content
+                                    && !content.is_empty()
+                                    && tx_clone.send(Ok(content.clone())).await.is_err()
+                                {
+                                    // Receiver dropped
+                                    return;
                                 }
                             }
                         }

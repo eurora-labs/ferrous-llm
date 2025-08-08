@@ -27,11 +27,31 @@ path = "anthropic_chat.rs"
 name = "demo_anthropic_chat_streaming"
 path = "anthropic_chat_streaming.rs"
 
+[[example]]
+name = "demo_openai_image_description"
+path = "openai_image_description.rs"
+
+[[example]]
+name = "demo_openai_image_base64"
+path = "openai_image_base64.rs"
+
+[[example]]
+name = "demo_openai_image_dynamic"
+path = "openai_image_dynamic.rs"
+
+
+
 [dependencies]
-ferrous-llm = { path = "..", features = ["openai", "ollama", "anthropic"] }
+ferrous-llm = { path = "..", features = [
+    "openai",
+    "ollama",
+    "anthropic",
+    "dynamic-image",
+] }
 tokio = { workspace = true, features = ["full"] }
 tracing-subscriber = "0.3"
 futures = "0.3"
 chrono = { workspace = true, features = ["serde"] }
 dotenv = "0.15"
 tracing = "0.1"
+base64 = "0.22"

@@ -71,14 +71,14 @@ impl ProviderConfig for OllamaConfig {
         validation::validate_range(self.http.max_retries, 0, 10, "http.max_retries")?;
 
         // Validate keep_alive if provided
-        if let Some(keep_alive) = self.keep_alive {
-            if keep_alive > 86400 {
-                // Max 24 hours
-                return Err(ConfigError::invalid_value(
-                    "keep_alive",
-                    "Keep alive duration cannot exceed 24 hours (86400 seconds)",
-                ));
-            }
+        if let Some(keep_alive) = self.keep_alive
+            && keep_alive > 86400
+        {
+            // Max 24 hours
+            return Err(ConfigError::invalid_value(
+                "keep_alive",
+                "Keep alive duration cannot exceed 24 hours (86400 seconds)",
+            ));
         }
 
         Ok(())

@@ -9,9 +9,11 @@ pub mod dynamic_image {
         let mut bytes = Vec::new();
         img.write_to(&mut Cursor::new(&mut bytes), ImageFormat::Png)
             .expect("image encoding failed");
-
-        // 2. Pre-size the output string to avoid reallocation.
-        let mut out = String::with_capacity((bytes.len() + 2) / 3 * 4);
+        const PREFIX: &str = "data:image/png;base64,";
+        // Pre-size: base64 length = 4 * ceil(n / 3)
+        let b64_len = bytes.len().div_ceil(3) * 4;
+        let mut out = String::with_capacity(PREFIX.len() + b64_len);
+        out.push_str(PREFIX);
         B64.encode_string(&bytes, &mut out);
         out
     }

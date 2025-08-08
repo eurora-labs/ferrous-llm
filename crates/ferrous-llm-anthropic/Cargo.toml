@@ -1,6 +1,6 @@
 [package]
 name = "ferrous-llm-anthropic"
-version = "0.3.0"
+version = "0.4.0"
 description = "Anthropic provider for the LLM library"
 authors.workspace = true
 edition.workspace = true
@@ -22,6 +22,7 @@ url = { workspace = true, features = ["serde"] }
 [features]
 default = []
 e2e-tests = []
+dynamic-image = ["ferrous-llm-core/dynamic-image"]
 
 [dev-dependencies]
 dotenv = "0.15"

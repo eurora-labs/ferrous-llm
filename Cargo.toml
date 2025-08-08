@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.3.1"
+version = "0.4.0"
 description = "LLM library"
 authors = ["Andre Roelofs <andre@eurora-labs.com>"]
 license = "Apache-2.0"
@@ -24,10 +24,10 @@ thiserror = "2.0.12"
 url = { version = "2.5.4" }
 
 
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.3.0", features = ["dynamic-image"] }
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.3.0", features = ["dynamic-image"] }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.3.0", features = ["dynamic-image"] }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.3.0", features = ["dynamic-image"] }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.4.0" }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.4.0" }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.4.0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.4.0" }
 
 [features]
 default = []
@@ -35,6 +35,7 @@ full = ["openai", "ollama", "anthropic"]
 openai = ["ferrous-llm-openai"]
 ollama = ["ferrous-llm-ollama"]
 anthropic = ["ferrous-llm-anthropic"]
+dynamic-image = ["ferrous-llm-core/dynamic-image", "ferrous-llm-openai/dynamic-image", "ferrous-llm-ollama/dynamic-image", "ferrous-llm-anthropic/dynamic-image"]
 
 # Add workspace-level package for e2e tests
 [package]

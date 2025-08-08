@@ -32,7 +32,12 @@ name = "demo_openai_image_description"
 path = "openai_image_description.rs"
 
 [dependencies]
-ferrous-llm = { path = "..", features = ["openai", "ollama", "anthropic"] }
+ferrous-llm = { path = "..", features = [
+    "openai",
+    "ollama",
+    "anthropic",
+    "dynamic-image",
+] }
 tokio = { workspace = true, features = ["full"] }
 tracing-subscriber = "0.3"
 futures = "0.3"

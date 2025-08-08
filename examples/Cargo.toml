@@ -31,6 +31,16 @@ path = "anthropic_chat_streaming.rs"
 name = "demo_openai_image_description"
 path = "openai_image_description.rs"
 
+[[example]]
+name = "demo_openai_image_base64"
+path = "openai_image_base64.rs"
+
+[[example]]
+name = "demo_openai_image_dynamic"
+path = "openai_image_dynamic.rs"
+
+
+
 [dependencies]
 ferrous-llm = { path = "..", features = [
     "openai",

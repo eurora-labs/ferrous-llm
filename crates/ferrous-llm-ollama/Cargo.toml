@@ -1,6 +1,6 @@
 [package]
 name = "ferrous-llm-ollama"
-version = "0.4.1"
+version = "0.5.0"
 description = "Ollama provider for the LLM library"
 authors.workspace = true
 edition.workspace = true

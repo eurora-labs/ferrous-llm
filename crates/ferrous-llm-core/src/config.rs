@@ -4,7 +4,7 @@
 //! use to manage their settings, validation, and initialization.
 
 use crate::error::ConfigError;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer};
 use std::fmt::Debug;
 use std::time::Duration;
 
@@ -32,8 +32,9 @@ pub trait ProviderConfig: Clone + Debug + Send + Sync {
 /// A secure string type for sensitive configuration values like API keys.
 ///
 /// This type ensures that sensitive values are not accidentally logged
-/// or displayed in debug output.
-#[derive(Clone, Serialize, Deserialize)]
+/// or displayed in debug output. It also redacts the value during serialization
+/// to avoid accidentally exposing secrets in configuration files or logs.
+#[derive(Clone, Deserialize)]
 pub struct SecretString(String);
 
 impl SecretString {
@@ -77,6 +78,15 @@ impl From<&str> for SecretString {
 impl Debug for SecretString {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("[REDACTED]")
+    }
+}
+
+impl Serialize for SecretString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str("[REDACTED]")
     }
 }
 

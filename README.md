@@ -24,7 +24,7 @@ Add ferrous-llm to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ferrous-llm = "0.4.1"
+ferrous-llm = "0.5.0"
 ```
 
 ### Feature Flags
@@ -33,7 +33,7 @@ By default, no providers are enabled. Enable the providers you need:
 
 ```toml
 [dependencies]
-ferrous-llm = { version = "0.4.1", features = ["openai", "anthropic", "ollama"] }
+ferrous-llm = { version = "0.5.0", features = ["openai", "anthropic", "ollama"] }
 ```
 
 Available features:

@@ -32,8 +32,8 @@ pub trait ProviderConfig: Clone + Debug + Send + Sync {
 /// A secure string type for sensitive configuration values like API keys.
 ///
 /// This type ensures that sensitive values are not accidentally logged
-/// or displayed in debug output. It also prevents serialization to avoid
-/// accidentally exposing secrets in configuration files or logs.
+/// or displayed in debug output. It also redacts the value during serialization
+/// to avoid accidentally exposing secrets in configuration files or logs.
 #[derive(Clone, Deserialize)]
 pub struct SecretString(String);
 

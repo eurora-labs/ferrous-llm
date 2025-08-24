@@ -8,8 +8,13 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 
+#[cfg(feature = "specta")]
+use specta::Type;
+
 /// A chat request containing messages and parameters.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
+
 pub struct ChatRequest {
     /// The conversation messages
     pub messages: Vec<Message>,
@@ -20,6 +25,7 @@ pub struct ChatRequest {
 }
 
 /// A completion request for non-chat text generation.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CompletionRequest {
     /// The text prompt to complete
@@ -31,6 +37,7 @@ pub struct CompletionRequest {
 }
 
 /// Common parameters used across providers.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Parameters {
     /// Controls randomness in the response (0.0 to 2.0)
@@ -50,6 +57,7 @@ pub struct Parameters {
 }
 
 /// Metadata for requests, including provider-specific extensions.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Metadata {
     /// Provider-specific extensions
@@ -63,6 +71,7 @@ pub struct Metadata {
 }
 
 /// A message in a conversation.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
     /// The role of the message sender
@@ -72,6 +81,7 @@ pub struct Message {
 }
 
 /// The role of a message sender.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum Role {
@@ -86,6 +96,7 @@ pub enum Role {
 }
 
 /// Content of a message, which can be text or multimodal.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum MessageContent {
@@ -98,6 +109,7 @@ pub enum MessageContent {
 }
 
 /// Tool-related message content.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ToolContent {
     /// Tool calls made by the assistant
@@ -139,6 +151,7 @@ impl MessageContent {
 }
 
 /// A part of multimodal message content.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ContentPart {
@@ -206,6 +219,7 @@ impl ContentPart {
     }
 }
 
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ImageSource {
     /// The URL or base64-encoded image data
@@ -255,6 +269,7 @@ impl From<ImageSource> for String {
 }
 
 /// A tool/function call made by the AI.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ToolCall {
     /// Unique identifier for this tool call
@@ -267,6 +282,7 @@ pub struct ToolCall {
 }
 
 /// A function call within a tool call.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FunctionCall {
     /// Name of the function to call
@@ -276,6 +292,7 @@ pub struct FunctionCall {
 }
 
 /// Definition of a tool/function that can be called.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Tool {
     /// Type of tool (usually "function")
@@ -286,6 +303,7 @@ pub struct Tool {
 }
 
 /// Definition of a function that can be called.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Function {
     /// Name of the function
@@ -335,6 +353,7 @@ pub struct Embedding {
 }
 
 /// Request for image generation.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImageRequest {
     /// Text prompt for image generation
@@ -354,6 +373,7 @@ pub struct ImageRequest {
 }
 
 /// Request for speech-to-text conversion.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SpeechToTextRequest {
     /// Audio data (base64 encoded or file path)
@@ -367,6 +387,7 @@ pub struct SpeechToTextRequest {
 }
 
 /// Request for text-to-speech conversion.
+#[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TextToSpeechRequest {
     /// Text to convert to speech

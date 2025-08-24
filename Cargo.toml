@@ -34,6 +34,7 @@ openai = ["ferrous-llm-openai"]
 ollama = ["ferrous-llm-ollama"]
 anthropic = ["ferrous-llm-anthropic"]
 dynamic-image = ["ferrous-llm-core/dynamic-image", "ferrous-llm-openai/dynamic-image", "ferrous-llm-ollama/dynamic-image", "ferrous-llm-anthropic/dynamic-image"]
+specta = ["ferrous-llm-core/specta", "ferrous-llm-openai/specta", "ferrous-llm-ollama/specta", "ferrous-llm-anthropic/specta"]
 
 # Add workspace-level package for e2e tests
 [package]

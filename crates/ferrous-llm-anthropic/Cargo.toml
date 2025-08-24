@@ -23,6 +23,7 @@ url = { workspace = true, features = ["serde"] }
 default = []
 e2e-tests = []
 dynamic-image = ["ferrous-llm-core/dynamic-image"]
+specta = ["ferrous-llm-core/specta"]
 
 [dev-dependencies]
 dotenv = "0.15"

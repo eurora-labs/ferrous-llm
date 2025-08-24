@@ -17,6 +17,13 @@ tokio = { workspace = true, features = ["full"] }
 url = { workspace = true, features = ["serde"] }
 image = { version = "0.25.6", features = ["jpeg", "png"], optional = true }
 base64 = { version = "0.22.1", optional = true }
+specta = { version = "2.0.0-rc.22", optional = true, features = [
+    "derive",
+    "serde",
+    "serde_json",
+    "chrono",
+] }
 
 [features]
 dynamic-image = ["image", "base64"]
+specta = ["dep:specta"]

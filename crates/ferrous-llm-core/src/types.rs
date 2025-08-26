@@ -106,6 +106,18 @@ impl fmt::Display for Role {
     }
 }
 
+impl From<String> for Role {
+    fn from(role: String) -> Self {
+        match role.as_str() {
+            "user" => Role::User,
+            "assistant" => Role::Assistant,
+            "system" => Role::System,
+            "tool" => Role::Tool,
+            _ => panic!("Invalid role: {role}"),
+        }
+    }
+}
+
 /// Content of a message, which can be text or multimodal.
 #[cfg_attr(feature = "specta", derive(Type))]
 #[derive(Debug, Clone, Serialize, Deserialize)]

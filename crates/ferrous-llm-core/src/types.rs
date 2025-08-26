@@ -6,7 +6,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt};
 
 /// A chat request containing messages and parameters.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -83,6 +83,17 @@ pub enum Role {
     System,
     /// Message from a tool/function call
     Tool,
+}
+
+impl fmt::Display for Role {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Role::User => "user",
+            Role::Assistant => "assistant",
+            Role::System => "system",
+            Role::Tool => "tool",
+        })
+    }
 }
 
 /// Content of a message, which can be text or multimodal.

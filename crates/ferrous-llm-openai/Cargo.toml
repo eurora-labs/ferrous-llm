@@ -5,6 +5,9 @@ description = "OpenAI provider for the LLM library"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
+documentation.workspace = true
+homepage.workspace = true
 
 [dependencies]
 ferrous-llm-core.workspace = true
@@ -24,6 +27,7 @@ default = []
 integration-tests = []
 e2e-tests = []
 dynamic-image = ["ferrous-llm-core/dynamic-image"]
+specta = ["ferrous-llm-core/specta"]
 
 [dev-dependencies]
 dotenv = "0.15"

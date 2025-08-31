@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.5.1"
+version = "0.6.0"
 description = "LLM library"
 authors = ["Andre Roelofs <andre@eurora-labs.com>"]
 license = "Apache-2.0"
@@ -25,10 +25,10 @@ dotenv = "0.15"
 futures = "0.3"
 thiserror = "2.0.12"
 url = { version = "2.5.4" }
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.5.1" }
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.5.1" }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.5.1" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.5.1" }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.6.0" }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.6.0" }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.6.0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.6.0" }
 
 [features]
 default = []
@@ -49,10 +49,10 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.5.1" }
-ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.5.1", optional = true }
-ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.5.1", optional = true }
-ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.5.1", optional = true }
+ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.6.0" }
+ferrous-llm-openai = { path = "./crates/ferrous-llm-openai", version = "0.6.0", optional = true }
+ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.6.0", optional = true }
+ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.6.0", optional = true }
 dotenv.workspace = true
 tokio.workspace = true
 futures.workspace = true

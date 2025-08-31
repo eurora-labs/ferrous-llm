@@ -24,7 +24,7 @@ Add ferrous-llm to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ferrous-llm = "0.5.1"
+ferrous-llm = "0.6.0"
 ```
 
 ### Feature Flags
@@ -33,7 +33,7 @@ By default, no providers are enabled. Enable the providers you need:
 
 ```toml
 [dependencies]
-ferrous-llm = { version = "0.5.1", features = ["openai", "anthropic", "ollama"] }
+ferrous-llm = { version = "0.6.0", features = ["openai", "anthropic", "ollama", "specta"] }
 ```
 
 Available features:
@@ -41,6 +41,7 @@ Available features:
 -   `openai` - OpenAI provider support
 -   `anthropic` - Anthropic Claude provider support
 -   `ollama` - Ollama local model provider support
+-   `specta` - Specta types generator support
 -   `full` - All providers (equivalent to enabling all individual features)
 
 ## 🏗️ Architecture

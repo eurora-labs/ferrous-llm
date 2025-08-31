@@ -5,6 +5,9 @@ description = "Ollama provider for the LLM library"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
+documentation.workspace = true
+homepage.workspace = true
 
 [dependencies]
 ferrous-llm-core.workspace = true

@@ -12,6 +12,9 @@ description = "LLM library"
 authors = ["Andre Roelofs <andre@eurora-labs.com>"]
 license = "Apache-2.0"
 edition = "2024"
+repository = "https://github.com/eurora-labs/ferrous-llm.git"
+documentation = "https://docs.rs/ferrous-llm"
+homepage = "https://eurora-labs.com"
 
 [workspace.dependencies]
 tokio = { version = "1.47.1", default-features = false, features = ["full"] }

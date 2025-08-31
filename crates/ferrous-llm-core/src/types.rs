@@ -106,14 +106,15 @@ impl fmt::Display for Role {
     }
 }
 
-impl From<String> for Role {
-    fn from(role: String) -> Self {
+impl TryFrom<String> for Role {
+    type Error = String;
+    fn try_from(role: String) -> Result<Self, Self::Error> {
         match role.as_str() {
-            "user" => Role::User,
-            "assistant" => Role::Assistant,
-            "system" => Role::System,
-            "tool" => Role::Tool,
-            _ => panic!("Invalid role: {role}"),
+            "user" => Ok(Role::User),
+            "assistant" => Ok(Role::Assistant),
+            "system" => Ok(Role::System),
+            "tool" => Ok(Role::Tool),
+            _ => Err(format!("Invalid role: {role}")),
         }
     }
 }

@@ -23,8 +23,8 @@ serde_json = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
 dotenv = "0.15"
 futures = "0.3"
-thiserror = "2.0.12"
-url = { version = "2.5.4" }
+thiserror = "2.0.16"
+url = { version = "2.5.7" }
 ferrous-llm-core = { path = "./crates/ferrous-llm-core", version = "0.6.1" }
 ferrous-llm-ollama = { path = "./crates/ferrous-llm-ollama", version = "0.6.1" }
 ferrous-llm-anthropic = { path = "./crates/ferrous-llm-anthropic", version = "0.6.1" }

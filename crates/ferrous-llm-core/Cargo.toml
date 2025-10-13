@@ -18,7 +18,7 @@ serde_json.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["full"] }
 url = { workspace = true, features = ["serde"] }
-image = { version = "0.25.6", features = ["jpeg", "png"], optional = true }
+image = { version = "0.25.8", features = ["jpeg", "png"], optional = true }
 base64 = { version = "0.22.1", optional = true }
 specta = { version = "2.0.0-rc.22", optional = true, features = [
     "derive",
